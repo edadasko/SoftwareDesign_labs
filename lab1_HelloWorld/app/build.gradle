@@ -1,5 +1,9 @@
 apply plugin: 'com.android.application'
 
+def gitCommitsCount = Integer.parseInt('git rev-list --count HEAD'.execute().text.trim())
+def versionNumber = 'git describe --long'.execute().text.trim().
+                                        replaceAll('-', '.').find('(\\d+\\.){2}\\d+')
+
 android {
     compileSdkVersion 29
     buildToolsVersion "29.0.2"
@@ -7,8 +11,8 @@ android {
         applicationId "com.example.helloworld"
         minSdkVersion 23
         targetSdkVersion 29
-        versionCode 1
-        versionName "1.0"
+        versionCode gitCommitsCount
+        versionName versionNumber
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
     buildTypes {
