@@ -2,9 +2,17 @@ apply plugin: 'com.android.application'
 
 def gitCommitsCount = Integer.parseInt('git rev-list --count HEAD'.execute().text.trim())
 def versionNumber = 'git describe --long'.execute().text.trim().
-                                        replaceAll('-', '.').find('(\\d+\\.){2}\\d+')
+                                          replaceAll('-', '.').find('(\\d+\\.){2}\\d+')
 
 android {
+    signingConfigs {
+        HelloWorldReleaseSigning {
+            storeFile file('/Users/edadasko/SoftwareDesign_labs/lab1_HelloWorld/key_store')
+            storePassword '67013003'
+            keyPassword '67013003'
+            keyAlias = 'HelloWorldKey'
+        }
+    }
     compileSdkVersion 29
     buildToolsVersion "29.0.2"
     defaultConfig {
@@ -19,6 +27,7 @@ android {
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+            signingConfig signingConfigs.HelloWorldReleaseSigning
         }
     }
 }
