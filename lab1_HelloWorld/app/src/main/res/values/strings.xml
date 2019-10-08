@@ -1,4 +1,9 @@
 <resources>
     <string name="app_name">HelloWorld</string>
     <string name="version_num">Current version name:</string>
+    <string name="device_id">Your device\'s ID:</string>
+    <string name="permission">This permission is needed to show your phone\'s ID!</string>
+    <string name="denied_permission">You can\'t see app\'s ID. Allow permission in settings to do that.</string>
+    <string name="ok">OK</string>
+    <string name="warning">Warning!</string>
 </resources>
