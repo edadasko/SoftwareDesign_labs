@@ -1,10 +1,8 @@
 package com.example.helloworld;
 
-import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
+import androidx.appcompat.app.AppCompatActivity;
 
 import androidx.annotation.NonNull;
-import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.pm.PackageManager;
@@ -15,7 +13,7 @@ import android.provider.Settings.Secure;
 import android.content.pm.ActivityInfo;
 import android.widget.Toast;
 
-public class MainActivity extends Activity {
+public class MainActivity extends AppCompatActivity {
 
     public static final String PERMISSION_STRING
         = android.Manifest.permission.READ_PHONE_STATE;
@@ -44,11 +42,8 @@ public class MainActivity extends Activity {
     }
 
     private void displayID() {
-        if (ContextCompat.checkSelfPermission(this, PERMISSION_STRING)
-                != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(this,
-                    new String[] {PERMISSION_STRING},
-                    PERMISSION_REQUEST_CODE);
+        if (checkSelfPermission(PERMISSION_STRING) != PackageManager.PERMISSION_GRANTED) {
+            requestPermissions(new String[] {PERMISSION_STRING}, PERMISSION_REQUEST_CODE);
         }
         else {
             TextView id = findViewById(R.id.device_id);
@@ -59,7 +54,7 @@ public class MainActivity extends Activity {
     }
 
     public void requestIdPermissionWithExplanation() {
-        if (ActivityCompat.shouldShowRequestPermissionRationale(this, PERMISSION_STRING)) {
+        if (shouldShowRequestPermissionRationale(PERMISSION_STRING)) {
             AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
             builder.setTitle(R.string.warning)
                     .setMessage(R.string.permission)
