@@ -1,0 +1,143 @@
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    tools:context="com.example.calculator.BasicButtons">
+
+    <GridLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:columnCount="4"
+        android:rowCount="5">
+
+        <Button
+            android:layout_rowWeight="1"
+            android:layout_columnSpan="2"
+            android:layout_columnWeight="2"
+            android:minWidth="12dp"
+            android:minHeight="12dp"
+            android:text="@string/discharge" />
+
+        <Button
+            android:layout_rowWeight="1"
+            android:layout_columnWeight="1"
+            android:minWidth="12dip"
+            android:minHeight="12dip"
+            android:text="@string/change_sign" />
+
+        <Button
+            android:layout_rowWeight="1"
+            android:layout_columnWeight="1"
+            android:minWidth="12dip"
+            android:minHeight="12dip"
+            android:text="@string/division" />
+
+        <Button
+            android:layout_rowWeight="1"
+            android:layout_columnWeight="1"
+            android:minWidth="12dip"
+            android:minHeight="12dip"
+            android:text="@string/seven" />
+
+        <Button
+            android:layout_rowWeight="1"
+            android:layout_columnWeight="1"
+            android:minWidth="12dip"
+            android:minHeight="12dip"
+            android:text="@string/eight" />
+
+        <Button
+            android:layout_rowWeight="1"
+            android:layout_columnWeight="1"
+            android:minWidth="12dip"
+            android:minHeight="12dip"
+            android:text="@string/nine" />
+
+        <Button
+            android:layout_rowWeight="1"
+            android:layout_columnWeight="1"
+            android:minWidth="12dip"
+            android:minHeight="12dip"
+            android:text="@string/multiplication"
+            app:layout_rowWeight="1" />
+
+        <Button
+            android:layout_rowWeight="1"
+            android:layout_columnWeight="1"
+            android:minWidth="12dip"
+            android:minHeight="12dip"
+            android:text="@string/four" />
+
+        <Button
+            android:layout_rowWeight="1"
+            android:layout_columnWeight="1"
+            android:minWidth="12dip"
+            android:minHeight="12dip"
+            android:text="@string/five" />
+
+        <Button
+            android:layout_rowWeight="1"
+            android:layout_columnWeight="1"
+            android:minWidth="12dip"
+            android:minHeight="12dip"
+            android:text="@string/six" />
+
+        <Button
+            android:layout_rowWeight="1"
+            android:layout_columnWeight="1"
+            android:minWidth="12dip"
+            android:minHeight="12dip"
+            android:text="@string/subtraction" />
+
+        <Button
+            android:layout_rowWeight="1"
+            android:layout_columnWeight="1"
+            android:minWidth="12dip"
+            android:minHeight="12dip"
+            android:text="@string/one" />
+
+        <Button
+            android:layout_rowWeight="1"
+            android:layout_columnWeight="1"
+            android:minWidth="12dip"
+            android:minHeight="12dip"
+            android:text="@string/two" />
+
+        <Button
+            android:layout_rowWeight="1"
+            android:layout_columnWeight="1"
+            android:minWidth="12dip"
+            android:minHeight="12dip"
+            android:text="@string/three" />
+
+        <Button
+            android:layout_rowWeight="1"
+            android:layout_columnWeight="1"
+            android:minWidth="12dip"
+            android:minHeight="12dip"
+            android:text="@string/addition" />
+
+        <Button
+            android:layout_rowWeight="1"
+            android:layout_columnWeight="1"
+            android:minWidth="12dip"
+            android:minHeight="12dip"
+            android:text="@string/zero" />
+
+        <Button
+            android:layout_rowWeight="1"
+            android:layout_columnWeight="1"
+            android:minWidth="12dip"
+            android:minHeight="12dip"
+            android:text="@string/dot" />
+
+        <Button
+            android:layout_rowWeight="1"
+            android:layout_columnSpan="2"
+            android:layout_columnWeight="2"
+            android:minWidth="12dip"
+            android:minHeight="12dip"
+            android:text="@string/equal" />
+    </GridLayout>
+</FrameLayout>

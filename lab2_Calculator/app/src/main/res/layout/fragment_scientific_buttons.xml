@@ -1,0 +1,100 @@
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.example.calculator.ScientificButtons">
+
+    <GridLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:columnCount="4"
+        android:rowCount="4">
+
+        <Button
+            android:layout_rowWeight="1"
+            android:layout_columnSpan="2"
+            android:layout_columnWeight="2"
+            android:minWidth="12dip"
+            android:minHeight="12dip"
+            android:text="@string/sin"
+            android:textAllCaps="false" />
+
+        <Button
+            android:layout_rowWeight="1"
+            android:layout_columnSpan="2"
+            android:layout_columnWeight="2"
+            android:minWidth="12dip"
+            android:minHeight="12dip"
+            android:text="@string/cos"
+            android:textAllCaps="false" />
+
+        <Button
+            android:layout_rowWeight="1"
+            android:layout_columnSpan="2"
+            android:layout_columnWeight="2"
+            android:minWidth="12dip"
+            android:minHeight="12dip"
+            android:text="@string/tg"
+            android:textAllCaps="false" />
+
+        <Button
+            android:layout_rowWeight="1"
+            android:layout_columnSpan="2"
+            android:layout_columnWeight="2"
+            android:minWidth="12dip"
+            android:minHeight="12dip"
+            android:text="@string/ctg"
+            android:textAllCaps="false" />
+
+        <Button
+            android:layout_rowWeight="1"
+            android:layout_columnSpan="2"
+            android:layout_columnWeight="2"
+            android:minWidth="12dip"
+            android:minHeight="12dip"
+            android:text="@string/ln"
+            android:textAllCaps="false" />
+
+        <Button
+            android:layout_rowWeight="1"
+            android:layout_columnSpan="2"
+            android:layout_columnWeight="2"
+            android:minWidth="12dip"
+            android:minHeight="12dip"
+            android:text="@string/exp"
+            android:textAllCaps="false" />
+
+        <Button
+            android:layout_rowWeight="1"
+            android:layout_columnWeight="1"
+            android:minWidth="12dip"
+            android:minHeight="12dip"
+            android:text="@string/e"
+            android:textAllCaps="false" />
+
+        <Button
+            android:layout_rowWeight="1"
+            android:layout_columnWeight="1"
+            android:minWidth="12dip"
+            android:minHeight="12dip"
+            android:text="@string/pi"
+            android:textAllCaps="false" />
+
+        <Button
+            android:layout_rowWeight="1"
+            android:layout_columnWeight="1"
+            android:minWidth="12dip"
+            android:minHeight="12dip"
+            android:text="@string/open_bracket"
+            android:textAllCaps="false" />
+
+        <Button
+            android:layout_rowWeight="1"
+            android:layout_columnWeight="1"
+            android:minWidth="12dip"
+            android:minHeight="12dip"
+            android:text="@string/close_bracket"
+            android:textAllCaps="false" />
+    </GridLayout>
+
+</FrameLayout>
