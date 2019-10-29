@@ -14,149 +14,250 @@
 
         <Button
             android:id="@+id/discharge"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
             android:layout_rowWeight="1"
-            android:layout_columnSpan="2"
-            android:layout_columnWeight="2"
+            android:layout_columnWeight="1"
             android:minWidth="12dp"
             android:minHeight="12dp"
+            android:autoSizeMaxTextSize="50dp"
+            android:autoSizeMinTextSize="10dp"
+            android:autoSizeTextType="uniform"
             android:text="@string/discharge" />
 
         <Button
-            android:id="@+id/change_sign"
+            android:id="@+id/power"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
             android:layout_rowWeight="1"
             android:layout_columnWeight="1"
-            android:minWidth="12dip"
-            android:minHeight="12dip"
+            android:minWidth="12dp"
+            android:minHeight="12dp"
+            android:autoSizeMaxTextSize="50dp"
+            android:autoSizeMinTextSize="10dp"
+            android:autoSizeTextType="uniform"
+            android:text="@string/power" />
+
+        <Button
+            android:id="@+id/change_sign"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_rowWeight="1"
+            android:layout_columnWeight="1"
+            android:minWidth="12dp"
+            android:minHeight="12dp"
+            android:autoSizeMaxTextSize="50dp"
+            android:autoSizeMinTextSize="10dp"
+            android:autoSizeTextType="uniform"
             android:text="@string/change_sign" />
 
         <Button
             android:id="@+id/division"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
             android:layout_rowWeight="1"
             android:layout_columnWeight="1"
             android:minWidth="12dip"
             android:minHeight="12dip"
+            android:autoSizeMaxTextSize="50dp"
+            android:autoSizeMinTextSize="10dp"
+            android:autoSizeTextType="uniform"
             android:text="@string/division" />
 
         <Button
             android:id="@+id/seven"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
             android:layout_rowWeight="1"
             android:layout_columnWeight="1"
             android:minWidth="12dip"
             android:minHeight="12dip"
+            android:autoSizeMaxTextSize="50dp"
+            android:autoSizeMinTextSize="10dp"
+            android:autoSizeTextType="uniform"
             android:text="@string/seven" />
 
         <Button
             android:id="@+id/eight"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
             android:layout_rowWeight="1"
             android:layout_columnWeight="1"
             android:minWidth="12dip"
             android:minHeight="12dip"
+            android:autoSizeMaxTextSize="50dp"
+            android:autoSizeMinTextSize="10dp"
+            android:autoSizeTextType="uniform"
             android:text="@string/eight" />
 
         <Button
             android:id="@+id/nine"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
             android:layout_rowWeight="1"
             android:layout_columnWeight="1"
             android:minWidth="12dip"
             android:minHeight="12dip"
+            android:autoSizeMaxTextSize="50dp"
+            android:autoSizeMinTextSize="10dp"
+            android:autoSizeTextType="uniform"
             android:text="@string/nine" />
 
         <Button
             android:id="@+id/multiplication"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
             android:layout_rowWeight="1"
             android:layout_columnWeight="1"
             android:minWidth="12dip"
             android:minHeight="12dip"
-            android:text="@string/multiplication"
-            app:layout_rowWeight="1" />
+            android:autoSizeMaxTextSize="50dp"
+            android:autoSizeMinTextSize="10dp"
+            android:autoSizeTextType="uniform"
+            android:text="@string/multiplication" />
 
         <Button
             android:id="@+id/four"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
             android:layout_rowWeight="1"
             android:layout_columnWeight="1"
             android:minWidth="12dip"
             android:minHeight="12dip"
+            android:autoSizeMaxTextSize="50dp"
+            android:autoSizeMinTextSize="10dp"
+            android:autoSizeTextType="uniform"
             android:text="@string/four" />
 
         <Button
             android:id="@+id/five"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
             android:layout_rowWeight="1"
             android:layout_columnWeight="1"
             android:minWidth="12dip"
             android:minHeight="12dip"
+            android:autoSizeMaxTextSize="50dp"
+            android:autoSizeMinTextSize="10dp"
+            android:autoSizeTextType="uniform"
             android:text="@string/five" />
 
         <Button
             android:id="@+id/six"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
             android:layout_rowWeight="1"
             android:layout_columnWeight="1"
             android:minWidth="12dip"
             android:minHeight="12dip"
+            android:autoSizeMaxTextSize="50dp"
+            android:autoSizeMinTextSize="10dp"
+            android:autoSizeTextType="uniform"
             android:text="@string/six" />
 
         <Button
             android:id="@+id/subtraction"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
             android:layout_rowWeight="1"
             android:layout_columnWeight="1"
             android:minWidth="12dip"
             android:minHeight="12dip"
+            android:autoSizeMaxTextSize="50dp"
+            android:autoSizeMinTextSize="10dp"
+            android:autoSizeTextType="uniform"
             android:text="@string/subtraction" />
 
         <Button
             android:id="@+id/one"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
             android:layout_rowWeight="1"
             android:layout_columnWeight="1"
             android:minWidth="12dip"
             android:minHeight="12dip"
+            android:autoSizeMaxTextSize="50dp"
+            android:autoSizeMinTextSize="10dp"
+            android:autoSizeTextType="uniform"
             android:text="@string/one" />
 
         <Button
             android:id="@+id/two"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
             android:layout_rowWeight="1"
             android:layout_columnWeight="1"
             android:minWidth="12dip"
             android:minHeight="12dip"
+            android:autoSizeMaxTextSize="50dp"
+            android:autoSizeMinTextSize="10dp"
+            android:autoSizeTextType="uniform"
             android:text="@string/two" />
 
         <Button
             android:id="@+id/three"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
             android:layout_rowWeight="1"
             android:layout_columnWeight="1"
             android:minWidth="12dip"
             android:minHeight="12dip"
+            android:autoSizeMaxTextSize="50dp"
+            android:autoSizeMinTextSize="10dp"
+            android:autoSizeTextType="uniform"
             android:text="@string/three" />
 
         <Button
             android:id="@+id/addiction"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
             android:layout_rowWeight="1"
             android:layout_columnWeight="1"
             android:minWidth="12dip"
             android:minHeight="12dip"
+            android:autoSizeMaxTextSize="50dp"
+            android:autoSizeMinTextSize="10dp"
+            android:autoSizeTextType="uniform"
             android:text="@string/addition" />
 
         <Button
             android:id="@+id/zero"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
             android:layout_rowWeight="1"
             android:layout_columnWeight="1"
             android:minWidth="12dip"
             android:minHeight="12dip"
+            android:autoSizeMaxTextSize="50dp"
+            android:autoSizeMinTextSize="10dp"
+            android:autoSizeTextType="uniform"
             android:text="@string/zero" />
 
         <Button
             android:id="@+id/dot"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
             android:layout_rowWeight="1"
             android:layout_columnWeight="1"
             android:minWidth="12dip"
             android:minHeight="12dip"
+            android:autoSizeMaxTextSize="50dp"
+            android:autoSizeMinTextSize="10dp"
+            android:autoSizeTextType="uniform"
             android:text="@string/dot" />
 
         <Button
             android:id="@+id/equal"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
             android:layout_rowWeight="1"
             android:layout_columnSpan="2"
             android:layout_columnWeight="2"
             android:minWidth="12dip"
             android:minHeight="12dip"
+            android:autoSizeMaxTextSize="50dp"
+            android:autoSizeMinTextSize="10dp"
+            android:autoSizeTextType="uniform"
             android:text="@string/equal" />
     </GridLayout>
 </FrameLayout>

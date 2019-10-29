@@ -11,6 +11,11 @@ import android.content.res.Configuration;
 
 import android.os.Bundle;
 import android.widget.TextView;
+import android.widget.Toast;
+
+import java.text.DecimalFormat;
+import java.util.InputMismatchException;
+import java.util.Locale;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -93,4 +98,55 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    public void removeSymbol(View view) {
+        String formula = formulaTextView.getText().toString();
+        if (formula.length() == 0)
+            return;
+        char lastSymbol = formula.charAt(formula.length() - 1);
+        if (Character.isLetter(lastSymbol))
+            while (Character.isLetter(lastSymbol)) {
+                formula = formula.substring(0, formula.length() - 1);
+                if (formula.length() == 0)
+                    break;
+                lastSymbol = formula.charAt(formula.length() - 1);
+            }
+        else
+            formula = formula.substring(0, formula.length() - 1);
+        formulaTextView.setText(formula);
+    }
+
+    public void calculate() {
+        String formula = formulaTextView.getText().toString();
+        RPNSolver solver = new RPNSolver();
+        double answer;
+        try {
+            answer = solver.calculate(formula);
+        }
+        catch (InputMismatchException exp) {
+            Toast toast = Toast.makeText(getApplicationContext(),
+                    "The expression is incorrect", Toast.LENGTH_SHORT);
+            toast.show();
+            return;
+        }
+
+        setNumber(answer);
+    }
+
+    private void setNumber(Double num) {
+        String strNum;
+        if (num.isNaN() || num.isInfinite()) {
+            formulaTextView.setText(String.format("%s", num));
+            return;
+        }
+        if (num % 1 == 0)
+            strNum = new DecimalFormat("#").format(num);
+        else {
+            String[] div = String.format("%s", num).split("\\.");
+            if (div[1].length() > 7)
+                strNum = String.format(Locale.US, "%.7f", num);
+            else
+                strNum = String.format("%s", num);
+        }
+        formulaTextView.setText(strNum);
+    }
 }

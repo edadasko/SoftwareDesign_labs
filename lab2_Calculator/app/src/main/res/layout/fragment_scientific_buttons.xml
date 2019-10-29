@@ -12,6 +12,11 @@
         android:rowCount="4">
 
         <Button
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:autoSizeMaxTextSize="40dp"
+            android:autoSizeMinTextSize="10dp"
+            android:autoSizeTextType="uniform"
             android:layout_rowWeight="1"
             android:layout_columnSpan="2"
             android:layout_columnWeight="2"
@@ -21,6 +26,11 @@
             android:textAllCaps="false" />
 
         <Button
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:autoSizeMaxTextSize="40dp"
+            android:autoSizeMinTextSize="10dp"
+            android:autoSizeTextType="uniform"
             android:layout_rowWeight="1"
             android:layout_columnSpan="2"
             android:layout_columnWeight="2"
@@ -30,6 +40,11 @@
             android:textAllCaps="false" />
 
         <Button
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:autoSizeMaxTextSize="40dp"
+            android:autoSizeMinTextSize="10dp"
+            android:autoSizeTextType="uniform"
             android:layout_rowWeight="1"
             android:layout_columnSpan="2"
             android:layout_columnWeight="2"
@@ -39,6 +54,11 @@
             android:textAllCaps="false" />
 
         <Button
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:autoSizeMaxTextSize="40dp"
+            android:autoSizeMinTextSize="10dp"
+            android:autoSizeTextType="uniform"
             android:layout_rowWeight="1"
             android:layout_columnSpan="2"
             android:layout_columnWeight="2"
@@ -48,6 +68,11 @@
             android:textAllCaps="false" />
 
         <Button
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:autoSizeMaxTextSize="40dp"
+            android:autoSizeMinTextSize="10dp"
+            android:autoSizeTextType="uniform"
             android:layout_rowWeight="1"
             android:layout_columnSpan="2"
             android:layout_columnWeight="2"
@@ -57,6 +82,39 @@
             android:textAllCaps="false" />
 
         <Button
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:autoSizeMaxTextSize="40dp"
+            android:autoSizeMinTextSize="10dp"
+            android:autoSizeTextType="uniform"
+            android:layout_rowWeight="1"
+            android:layout_columnSpan="2"
+            android:layout_columnWeight="2"
+            android:minWidth="12dip"
+            android:minHeight="12dip"
+            android:text="@string/log2"
+            android:textAllCaps="false" />
+
+        <Button
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:autoSizeMaxTextSize="40dp"
+            android:autoSizeMinTextSize="10dp"
+            android:autoSizeTextType="uniform"
+            android:layout_rowWeight="1"
+            android:layout_columnSpan="2"
+            android:layout_columnWeight="2"
+            android:minWidth="12dip"
+            android:minHeight="12dip"
+            android:text="@string/log10"
+            android:textAllCaps="false" />
+
+        <Button
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:autoSizeMaxTextSize="40dp"
+            android:autoSizeMinTextSize="10dp"
+            android:autoSizeTextType="uniform"
             android:layout_rowWeight="1"
             android:layout_columnSpan="2"
             android:layout_columnWeight="2"
@@ -65,7 +123,13 @@
             android:text="@string/exp"
             android:textAllCaps="false" />
 
+
         <Button
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:autoSizeMaxTextSize="40dp"
+            android:autoSizeMinTextSize="10dp"
+            android:autoSizeTextType="uniform"
             android:layout_rowWeight="1"
             android:layout_columnWeight="1"
             android:minWidth="12dip"
@@ -74,6 +138,11 @@
             android:textAllCaps="false" />
 
         <Button
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:autoSizeMaxTextSize="40dp"
+            android:autoSizeMinTextSize="10dp"
+            android:autoSizeTextType="uniform"
             android:layout_rowWeight="1"
             android:layout_columnWeight="1"
             android:minWidth="12dip"
@@ -82,6 +151,11 @@
             android:textAllCaps="false" />
 
         <Button
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:autoSizeMaxTextSize="40dp"
+            android:autoSizeMinTextSize="10dp"
+            android:autoSizeTextType="uniform"
             android:layout_rowWeight="1"
             android:layout_columnWeight="1"
             android:minWidth="12dip"
@@ -90,6 +164,11 @@
             android:textAllCaps="false" />
 
         <Button
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:autoSizeMaxTextSize="40dp"
+            android:autoSizeMinTextSize="10dp"
+            android:autoSizeTextType="uniform"
             android:layout_rowWeight="1"
             android:layout_columnWeight="1"
             android:minWidth="12dip"

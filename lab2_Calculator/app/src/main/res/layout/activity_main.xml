@@ -14,18 +14,16 @@
         <TextView
             android:id="@+id/formulaTextView"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="120dp"
             android:background="@color/colorBlack"
-            android:paddingTop="50sp"
-            android:paddingEnd="20sp"
+            android:onClick="removeSymbol"
             android:paddingStart="20sp"
+            android:paddingTop="10sp"
+            android:paddingEnd="20sp"
             android:paddingBottom="10sp"
-            android:text="@string/zero"
             android:textAlignment="textEnd"
             android:textColor="@color/colorWhite"
-            android:textSize="80sp"
-            app:layout_constraintTop_toTopOf="parent"
-            tools:layout_editor_absoluteX="0dp" />
+            android:autoSizeTextType="uniform" />
 
         <Button
             android:id="@+id/changeModeButton"
