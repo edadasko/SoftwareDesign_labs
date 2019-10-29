@@ -10,29 +10,31 @@ import android.content.pm.ActivityInfo;
 import android.content.res.Configuration;
 
 import android.os.Bundle;
+import android.widget.TextView;
 
 public class MainActivity extends AppCompatActivity {
 
     boolean isInScientificMode = false;
+    TextView formulaTextView;
     Fragment scientificButtonsFragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR);
+
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.activity_main);
 
-        if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT)
-        {
+        if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT) {
             isInScientificMode = false;
             hideScientificButtons();
-        }
-        else
-        {
+        } else {
             isInScientificMode = true;
         }
 
+        formulaTextView = findViewById(R.id.formulaTextView);
+        restoreState(savedInstanceState);
     }
 
     public void changeMode(View view) {
@@ -60,20 +62,35 @@ public class MainActivity extends AppCompatActivity {
         isInScientificMode = true;
         scientificButtonsFragment = getSupportFragmentManager().findFragmentById(R.id.scientificButtonsFragment);
         if (scientificButtonsFragment != null) {
-                findViewById(R.id.scientificButtonsFragment).setLayoutParams(new LinearLayout.LayoutParams(
-                        LayoutParams.MATCH_PARENT,
-                        0,
-                        2));
-                findViewById(R.id.basicButtonsFragment).setLayoutParams(new LinearLayout.LayoutParams(
-                        LayoutParams.MATCH_PARENT,
-                        0,
-                        3));
-            }
+            findViewById(R.id.scientificButtonsFragment).setLayoutParams(new LinearLayout.LayoutParams(
+                    LayoutParams.MATCH_PARENT,
+                    0,
+                    2));
+            findViewById(R.id.basicButtonsFragment).setLayoutParams(new LinearLayout.LayoutParams(
+                    LayoutParams.MATCH_PARENT,
+                    0,
+                    3));
+        }
 
-            getSupportFragmentManager().beginTransaction()
-                    .show(scientificButtonsFragment)
-                    .commit();
-        
+        getSupportFragmentManager().beginTransaction()
+                .show(scientificButtonsFragment)
+                .commit();
+
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle savedInstanceState) {
+        super.onSaveInstanceState(savedInstanceState);
+        savedInstanceState.putString("currentFormula", formulaTextView.getText().toString());
+    }
+
+    private void restoreState(Bundle savedInstanceState) {
+        if (savedInstanceState != null) {
+            super.onRestoreInstanceState(savedInstanceState);
+            String savedFormula = savedInstanceState.getString("currentFormula");
+            if (savedFormula != null)
+                formulaTextView.setText(savedFormula);
+        }
     }
 
 }

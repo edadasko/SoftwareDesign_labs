@@ -6,12 +6,14 @@
     tools:context="com.example.calculator.BasicButtons">
 
     <GridLayout
+        android:id="@+id/basicButtonsGrid"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:columnCount="4"
         android:rowCount="5">
 
         <Button
+            android:id="@+id/discharge"
             android:layout_rowWeight="1"
             android:layout_columnSpan="2"
             android:layout_columnWeight="2"
@@ -20,6 +22,7 @@
             android:text="@string/discharge" />
 
         <Button
+            android:id="@+id/change_sign"
             android:layout_rowWeight="1"
             android:layout_columnWeight="1"
             android:minWidth="12dip"
@@ -27,6 +30,7 @@
             android:text="@string/change_sign" />
 
         <Button
+            android:id="@+id/division"
             android:layout_rowWeight="1"
             android:layout_columnWeight="1"
             android:minWidth="12dip"
@@ -34,6 +38,7 @@
             android:text="@string/division" />
 
         <Button
+            android:id="@+id/seven"
             android:layout_rowWeight="1"
             android:layout_columnWeight="1"
             android:minWidth="12dip"
@@ -41,6 +46,7 @@
             android:text="@string/seven" />
 
         <Button
+            android:id="@+id/eight"
             android:layout_rowWeight="1"
             android:layout_columnWeight="1"
             android:minWidth="12dip"
@@ -48,6 +54,7 @@
             android:text="@string/eight" />
 
         <Button
+            android:id="@+id/nine"
             android:layout_rowWeight="1"
             android:layout_columnWeight="1"
             android:minWidth="12dip"
@@ -55,6 +62,7 @@
             android:text="@string/nine" />
 
         <Button
+            android:id="@+id/multiplication"
             android:layout_rowWeight="1"
             android:layout_columnWeight="1"
             android:minWidth="12dip"
@@ -63,6 +71,7 @@
             app:layout_rowWeight="1" />
 
         <Button
+            android:id="@+id/four"
             android:layout_rowWeight="1"
             android:layout_columnWeight="1"
             android:minWidth="12dip"
@@ -70,6 +79,7 @@
             android:text="@string/four" />
 
         <Button
+            android:id="@+id/five"
             android:layout_rowWeight="1"
             android:layout_columnWeight="1"
             android:minWidth="12dip"
@@ -77,6 +87,7 @@
             android:text="@string/five" />
 
         <Button
+            android:id="@+id/six"
             android:layout_rowWeight="1"
             android:layout_columnWeight="1"
             android:minWidth="12dip"
@@ -84,6 +95,7 @@
             android:text="@string/six" />
 
         <Button
+            android:id="@+id/subtraction"
             android:layout_rowWeight="1"
             android:layout_columnWeight="1"
             android:minWidth="12dip"
@@ -91,6 +103,7 @@
             android:text="@string/subtraction" />
 
         <Button
+            android:id="@+id/one"
             android:layout_rowWeight="1"
             android:layout_columnWeight="1"
             android:minWidth="12dip"
@@ -98,6 +111,7 @@
             android:text="@string/one" />
 
         <Button
+            android:id="@+id/two"
             android:layout_rowWeight="1"
             android:layout_columnWeight="1"
             android:minWidth="12dip"
@@ -105,6 +119,7 @@
             android:text="@string/two" />
 
         <Button
+            android:id="@+id/three"
             android:layout_rowWeight="1"
             android:layout_columnWeight="1"
             android:minWidth="12dip"
@@ -112,6 +127,7 @@
             android:text="@string/three" />
 
         <Button
+            android:id="@+id/addiction"
             android:layout_rowWeight="1"
             android:layout_columnWeight="1"
             android:minWidth="12dip"
@@ -119,6 +135,7 @@
             android:text="@string/addition" />
 
         <Button
+            android:id="@+id/zero"
             android:layout_rowWeight="1"
             android:layout_columnWeight="1"
             android:minWidth="12dip"
@@ -126,6 +143,7 @@
             android:text="@string/zero" />
 
         <Button
+            android:id="@+id/dot"
             android:layout_rowWeight="1"
             android:layout_columnWeight="1"
             android:minWidth="12dip"
@@ -133,6 +151,7 @@
             android:text="@string/dot" />
 
         <Button
+            android:id="@+id/equal"
             android:layout_rowWeight="1"
             android:layout_columnSpan="2"
             android:layout_columnWeight="2"
