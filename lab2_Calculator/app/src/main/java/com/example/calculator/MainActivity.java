@@ -4,22 +4,22 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 
 import android.view.View;
+import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.LinearLayout.LayoutParams;
 import android.content.pm.ActivityInfo;
 import android.content.res.Configuration;
 
 import android.os.Bundle;
-import android.widget.TextView;
 import android.widget.Toast;
 
+import java.text.DecimalFormat;
 import java.util.InputMismatchException;
-import java.util.Locale;
 
 public class MainActivity extends AppCompatActivity {
 
     boolean isInScientificMode = false;
-    TextView formulaTextView;
+    EditText numbersEditText;
     Fragment scientificButtonsFragment;
 
     @Override
@@ -27,8 +27,9 @@ public class MainActivity extends AppCompatActivity {
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR);
 
         super.onCreate(savedInstanceState);
-
         setContentView(R.layout.activity_main);
+
+        dontShowKeyboard();
 
         if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT) {
             isInScientificMode = false;
@@ -37,7 +38,7 @@ public class MainActivity extends AppCompatActivity {
             isInScientificMode = true;
         }
 
-        formulaTextView = findViewById(R.id.formulaTextView);
+        numbersEditText = findViewById(R.id.numbersEditText);
         restoreState(savedInstanceState);
     }
 
@@ -85,7 +86,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public void onSaveInstanceState(Bundle savedInstanceState) {
         super.onSaveInstanceState(savedInstanceState);
-        savedInstanceState.putString("currentFormula", formulaTextView.getText().toString());
+        savedInstanceState.putString("currentFormula", numbersEditText.getText().toString());
     }
 
     private void restoreState(Bundle savedInstanceState) {
@@ -93,12 +94,12 @@ public class MainActivity extends AppCompatActivity {
             super.onRestoreInstanceState(savedInstanceState);
             String savedFormula = savedInstanceState.getString("currentFormula");
             if (savedFormula != null)
-                formulaTextView.setText(savedFormula);
+                numbersEditText.setText(savedFormula);
         }
     }
 
     public void removeSymbol(View view) {
-        String formula = formulaTextView.getText().toString();
+        String formula = numbersEditText.getText().toString();
         if (formula.length() == 0)
             return;
         char lastSymbol = formula.charAt(formula.length() - 1);
@@ -111,11 +112,11 @@ public class MainActivity extends AppCompatActivity {
             }
         else
             formula = formula.substring(0, formula.length() - 1);
-        formulaTextView.setText(formula);
+        numbersEditText.setText(formula);
     }
 
     public void calculate() {
-        String formula = formulaTextView.getText().toString();
+        String formula = numbersEditText.getText().toString();
         RPNSolver solver = new RPNSolver();
         double answer;
         try {
@@ -129,19 +130,24 @@ public class MainActivity extends AppCompatActivity {
         }
 
         setNumber(answer);
+        numbersEditText.setSelection(numbersEditText.getText().length());
     }
 
     private void setNumber(Double num) {
         String strNum;
         if (num.isNaN() || num.isInfinite()) {
-            formulaTextView.setText(String.format("%s", num));
+            numbersEditText.setText(String.format("%s", num));
             return;
         }
-        strNum = String.format(Locale.US, "%.7f", num);
-        strNum = strNum.replaceAll("[0]*$", "").replaceAll(".$", "");
+        strNum = new DecimalFormat("#.########").format(num);
 
         if(strNum.equals("-0"))
             strNum = "0";
-        formulaTextView.setText(strNum);
+        numbersEditText.setText(strNum);
+    }
+
+    private void dontShowKeyboard() {
+        EditText editText = findViewById(R.id.numbersEditText);
+        editText.setShowSoftInputOnFocus(false);
     }
 }

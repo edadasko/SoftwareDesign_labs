@@ -12,23 +12,22 @@
         android:orientation="vertical"
         android:background="@color/colorWhite">
 
-        <TextView
-            android:id="@+id/formulaTextView"
+        <EditText
+            android:id="@+id/numbersEditText"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@color/colorWhite"
+            android:textSize="50sp"
+            android:autoSizeTextType="uniform"
             android:paddingTop="5sp"
             android:paddingEnd="20sp"
             android:paddingStart="20sp"
             android:paddingBottom="5sp"
-            android:text="@string/zero"
             android:textAlignment="textEnd"
-            android:textSize="50sp"
             android:fontFamily="sans-serif-thin"
             android:textColor="@color/colorBlack"
-            app:layout_constraintTop_toTopOf="parent"
-            tools:layout_editor_absoluteX="0dp"
-            android:onClick="removeSymbol"/>
+            android:onClick="removeSymbol"
+            android:inputType="textNoSuggestions|textVisiblePassword"/>
 
 
         <fragment

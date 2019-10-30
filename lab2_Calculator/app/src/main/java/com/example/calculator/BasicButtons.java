@@ -10,7 +10,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.TextView;
+import android.widget.EditText;
 
 import java.util.ArrayList;
 
@@ -37,35 +37,34 @@ public class BasicButtons extends Fragment implements View.OnClickListener {
     public void onClick(View view) {
         String currentButtonText = ((Button)view).getText().toString();
         Activity currentActivity = getActivity();
-        TextView numbersTextView;
+        EditText numbersEditText;
         if (currentActivity != null)
-            numbersTextView = currentActivity.findViewById(R.id.formulaTextView);
+            numbersEditText = currentActivity.findViewById(R.id.numbersEditText);
         else
             return;
-        String expr = numbersTextView.getText().toString();
+        String expr = numbersEditText.getText().toString();
 
             switch (currentButtonText) {
                 case "c":
-                    discharge(numbersTextView);
+                    discharge(numbersEditText);
                     break;
                 case "±":
-                    changeSign(expr, numbersTextView);
+                    changeSign(expr, numbersEditText);
                     break;
                 case "=":
                     ((MainActivity)getActivity()).calculate();
                     return;
                 default:
-                    append(expr, currentButtonText, numbersTextView);
+                    append(expr, currentButtonText, numbersEditText);
                     break;
             }
-        numbersTextView.setText(numbersTextView.getText());
     }
 
-    private void discharge(TextView numbersTextView) {
-        numbersTextView.setText("");
+    private void discharge(EditText numbersEditText) {
+        numbersEditText.setText("");
     }
 
-    private void changeSign(String expr, TextView numbersTextView) {
+    private void changeSign(String expr, EditText numbersEditText) {
         if (expr.length() == 0)
             return;
         if (isStringPositiveNumber(expr) || RPNSolver.constants.contains(expr))
@@ -83,7 +82,7 @@ public class BasicButtons extends Fragment implements View.OnClickListener {
         else
             expr = "-(" + expr + ")";
 
-        numbersTextView.setText(expr);
+        numbersEditText.setText(expr);
 
     }
 
@@ -94,16 +93,36 @@ public class BasicButtons extends Fragment implements View.OnClickListener {
     }
 
 
-    private void append(String expr, String currentButtonText, TextView numbersTextView) {
+    private void append(String expr, String currentButtonText, EditText numbersEditText) {
         if (!expr.equals("")) {
-            char lastSymbol = expr.charAt(expr.length() - 1);
-            if ((lastSymbol == ')' || RPNSolver.constants.contains(String.valueOf(lastSymbol)))
-                    && Character.isDigit(currentButtonText.charAt(0))) {
-                numbersTextView.append("*" + currentButtonText);
+            int select = numbersEditText.getSelectionStart();
+            if (select == 0) {
+                if (Character.isLetter(expr.charAt(0)))
+                    currentButtonText += "*";
+                expr = currentButtonText + expr;
+                numbersEditText.setText(expr);
+                numbersEditText.setSelection(currentButtonText.length());
                 return;
             }
+            if (select == expr.length()) {
+                char lastSymbol = expr.charAt(select - 1);
+                if ((lastSymbol == ')' || RPNSolver.constants.contains(String.valueOf(lastSymbol)))
+                        && Character.isDigit(currentButtonText.charAt(0))) {
+                    expr += "*" + currentButtonText;
+                    numbersEditText.setText(expr);
+                    numbersEditText.setSelection(expr.length());
+                    return;
+                }
+            }
+            expr = expr.substring(0, select) + currentButtonText + expr.substring(select);
+            numbersEditText.setText(expr);
+            numbersEditText.setSelection(select + currentButtonText.length());
+            return;
+
         }
-        numbersTextView.append(currentButtonText);
+        numbersEditText.append(currentButtonText);
+        numbersEditText.requestFocus();
+        numbersEditText.setSelection(currentButtonText.length());
     }
 
 }

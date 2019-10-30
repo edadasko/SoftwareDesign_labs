@@ -9,7 +9,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.TextView;
+import android.widget.EditText;
 
 import java.util.ArrayList;
 
@@ -35,33 +35,60 @@ public class ScientificButtons extends Fragment implements View.OnClickListener 
     public void onClick(View view) {
         String currentButtonText = ((Button) view).getText().toString();
         Activity currentActivity = getActivity();
-        TextView numbersTextView;
+        EditText numbersEditText;
         if (currentActivity != null)
-            numbersTextView = currentActivity.findViewById(R.id.formulaTextView);
+            numbersEditText = currentActivity.findViewById(R.id.numbersEditText);
         else
             return;
 
-        String expr = numbersTextView.getText().toString();
-        append(expr, currentButtonText, numbersTextView);
-        numbersTextView.setText(numbersTextView.getText());
+        String expr = numbersEditText.getText().toString();
+        append(expr, currentButtonText, numbersEditText);
     }
 
-    private void append(String expr, String currentButtonText, TextView numbersTextView) {
+    private void append(String expr, String currentButtonText, EditText numbersEditText) {
         char lastSymbol;
         if (!expr.equals("")) {
-            lastSymbol = expr.charAt(expr.length() - 1);
-            if (!currentButtonText.equals(")") && lastSymbol != '('
-                    && (Character.isDigit(lastSymbol) ||
-                    RPNSolver.constants.contains(String.valueOf(lastSymbol))))
-                numbersTextView.append("*" + currentButtonText);
-            else
-                numbersTextView.append(currentButtonText);
+            int select = numbersEditText.getSelectionStart();
+            if (select == 0) {
+                if (RPNSolver.functions.contains(currentButtonText))
+                    currentButtonText += "(";
+                else if (RPNSolver.constants.contains(currentButtonText))
+                    currentButtonText += "*";
+                expr = currentButtonText + expr;
+                numbersEditText.setText(expr);
+                numbersEditText.setSelection(currentButtonText.length());
+                return;
+            }
+            if (select == expr.length()) {
+                lastSymbol = expr.charAt(select - 1);
+                if (!currentButtonText.equals(")") && lastSymbol != '('
+                        && (Character.isDigit(lastSymbol) || lastSymbol == ')' ||
+                        RPNSolver.constants.contains(String.valueOf(lastSymbol)))) {
+                    if (RPNSolver.functions.contains(currentButtonText))
+                        currentButtonText += "(";
+                    expr += "*" + currentButtonText;
+                }
+                else if (RPNSolver.functions.contains(currentButtonText))
+                    expr += currentButtonText + "(";
+                else
+                    expr += currentButtonText;
+                numbersEditText.setText(expr);
+                numbersEditText.setSelection(expr.length());
+                return;
+            }
+            if (RPNSolver.functions.contains(currentButtonText))
+                currentButtonText += "(";
+            expr = expr.substring(0, select) + currentButtonText + expr.substring(select);
+            numbersEditText.setText(expr);
+            numbersEditText.setSelection(select + currentButtonText.length());
         }
-        else
-            numbersTextView.append(currentButtonText);
-
-        if (RPNSolver.functions.contains(currentButtonText))
-            numbersTextView.append("(");
+        else {
+            if (RPNSolver.functions.contains(currentButtonText))
+                currentButtonText += "(";
+            numbersEditText.append(currentButtonText);
+            numbersEditText.requestFocus();
+            numbersEditText.setSelection(currentButtonText.length());
+        }
     }
 
 }
