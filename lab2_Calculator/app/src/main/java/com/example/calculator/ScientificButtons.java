@@ -1,6 +1,5 @@
 package com.example.calculator;
 
-
 import android.app.Activity;
 import android.os.Bundle;
 
@@ -13,16 +12,10 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 
 public class ScientificButtons extends Fragment implements View.OnClickListener {
 
-    private List<String> functions = Arrays.asList("sin", "cos", "tg", "ctg", "ln", "exp", "log2", "log10");
-
-    public ScientificButtons() {
-    }
-
+    public ScientificButtons() { }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -30,11 +23,11 @@ public class ScientificButtons extends Fragment implements View.OnClickListener 
 
         View view = inflater.inflate(R.layout.fragment_scientific_buttons, container, false);
 
-        ArrayList<View> buttons = view.findViewById(R.id.scientificButtonsGrid).getTouchables();
+            ArrayList<View> buttons = view.findViewById(R.id.scientificButtonsGrid).getTouchables();
 
-        for (View b : buttons) {
-            b.setOnClickListener(this);
-        }
+            for (View b : buttons) {
+                b.setOnClickListener(this);
+            }
         return view;
     }
 
@@ -49,12 +42,17 @@ public class ScientificButtons extends Fragment implements View.OnClickListener 
             return;
 
         String expr = numbersTextView.getText().toString();
-        String constants = "πe";
+        append(expr, currentButtonText, numbersTextView);
+        numbersTextView.setText(numbersTextView.getText());
+    }
+
+    private void append(String expr, String currentButtonText, TextView numbersTextView) {
         char lastSymbol;
         if (!expr.equals("")) {
             lastSymbol = expr.charAt(expr.length() - 1);
             if (!currentButtonText.equals(")") && lastSymbol != '('
-                    && (Character.isDigit(lastSymbol) || constants.indexOf(lastSymbol) != -1))
+                    && (Character.isDigit(lastSymbol) ||
+                    RPNSolver.constants.contains(String.valueOf(lastSymbol))))
                 numbersTextView.append("*" + currentButtonText);
             else
                 numbersTextView.append(currentButtonText);
@@ -62,9 +60,8 @@ public class ScientificButtons extends Fragment implements View.OnClickListener 
         else
             numbersTextView.append(currentButtonText);
 
-        if (functions.contains(currentButtonText))
+        if (RPNSolver.functions.contains(currentButtonText))
             numbersTextView.append("(");
-
-        numbersTextView.setText(numbersTextView.getText());
     }
+
 }

@@ -5,10 +5,11 @@
     tools:context="com.example.calculator.ScientificButtons">
 
     <TextView
+        android:id="@+id/scientificButtonsGrid"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:text="@string/not_supported"
-        android:textSize="20dp"
+        android:textSize="20sp"
         android:textAlignment="center"
         android:gravity="center"/>
 
