@@ -21,7 +21,6 @@ public class ScientificButtons extends Fragment implements View.OnClickListener 
     private List<String> functions = Arrays.asList("sin", "cos", "tg", "ctg", "ln", "exp", "log2", "log10");
 
     public ScientificButtons() {
-        // Required empty public constructor
     }
 
 

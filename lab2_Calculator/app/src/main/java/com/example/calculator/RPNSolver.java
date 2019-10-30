@@ -23,81 +23,81 @@ public class RPNSolver {
     private Map<String, Function> functionsDict;
     private Map<String, Double> constantsDict;
 
-    private List<String> operators = Arrays.asList("+", "-", "*", "/", "^");
+    private String uMinus = "±";
+
+    private List<String> operators = Arrays.asList("+", "-", "*", "/", "^", uMinus);
     private List<String> brackets = Arrays.asList("(", ")");
     private List<String> functions = Arrays.asList("sin", "cos", "tg", "ctg", "ln", "exp", "log2", "log10");
     private List<String> constants = Arrays.asList("π", "e");
-
-    private String uMinus = "u-";
+    private List<String> rightAssociativeOperators = Arrays.asList("^");
 
     RPNSolver() {
         initOperationsAndFunctions();
     }
 
     private boolean isDelimiter(String token) {
-        if (token.length() != 1) return false;
         if (operators.contains(token)) return true;
-        if (brackets.contains(token)) return true;
-        return false;
+        return (brackets.contains(token));
     }
 
     private boolean isOperator(String token) {
-        if (token.equals(uMinus)) return true;
-        if (token.length() != 1) return false;
-        if (operators.contains(token)) return true;
-        return false;
+        return  operators.contains(token);
     }
 
     private boolean isFunction(String token) {
-        if (functions.contains(token)) return true;
-        return false;
+        return functions.contains(token);
+    }
+
+    private boolean isRightAssociative(String token) {
+        return rightAssociativeOperators.contains(token);
     }
 
     private int priority(String token) {
         if (token.equals("(")) return 1;
         if (token.equals("+") || token.equals("-")) return 2;
-        if (token.equals("*") || token.equals("/")) return 3;
-        if (token.equals("^")) return 4;
-        return 5;
+        if (token.equals(uMinus)) return 3;
+        if (token.equals("*") || token.equals("/")) return 4;
+        if (token.equals("^")) return 5;
+        return 6;
     }
 
-    private List<String> parse(String infix) {
+    private List<String> toPostfix(String infix) {
         String delimiters = "+-*/^()";
         List<String> postfix = new ArrayList<>();
         Stack<String> stack = new Stack<>();
         StringTokenizer tokenizer = new StringTokenizer(infix, delimiters, true);
-        String prev = "";
+        String prev = null;
         String curr;
+
         while (tokenizer.hasMoreTokens()) {
             curr = tokenizer.nextToken();
-            if (!tokenizer.hasMoreTokens() && isOperator(curr)) {
+
+            if (!tokenizer.hasMoreTokens() && isOperator(curr))
                 throw new InputMismatchException();
-            }
+
             if (isFunction(curr)) stack.push(curr);
             else if (isDelimiter(curr)) {
                 if (curr.equals("(")) stack.push(curr);
                 else if (curr.equals(")")) {
+                    if (stack.isEmpty())
+                        throw new InputMismatchException();
                     while (!stack.peek().equals("(")) {
                         postfix.add(stack.pop());
-                        if (stack.isEmpty()) {
+                        if (stack.isEmpty())
                             throw new InputMismatchException();
-                        }
                     }
                     stack.pop();
-                    if (!stack.isEmpty() && isFunction(stack.peek())) {
+                    if (!stack.isEmpty() && isFunction(stack.peek()))
                         postfix.add(stack.pop());
-                    }
                 }
                 else {
-                    if (curr.equals("-") && (prev.equals("") || (isDelimiter(prev)  && !prev.equals(")")))) {
+                    if (curr.equals("-") && (prev == null || prev.equals("(")))
                         curr = uMinus;
-                    }
-                    else {
-                        while (!stack.isEmpty() && (priority(curr) <= priority(stack.peek()))) {
+                    else
+                        while (!stack.isEmpty() &&
+                                ((!isRightAssociative(curr) && priority(curr) <= priority(stack.peek()))
+                                        || (isRightAssociative(curr) && priority(curr) < priority(stack.peek()))))
                             postfix.add(stack.pop());
-                        }
-
-                    }
                     stack.push(curr);
                 }
             }
@@ -108,16 +108,16 @@ public class RPNSolver {
         }
 
         while (!stack.isEmpty()) {
-            if (isOperator(stack.peek())) postfix.add(stack.pop());
-            else {
+            if (isOperator(stack.peek()))
+                postfix.add(stack.pop());
+            else
                 throw new InputMismatchException();
-            }
         }
         return postfix;
     }
 
     public double calculate(String infix) {
-        List<String> postfix = parse(infix);
+        List<String> postfix = toPostfix(infix);
         Stack<Double> stack = new Stack<>();
         try {
             for (String x : postfix) {
@@ -136,8 +136,9 @@ public class RPNSolver {
         catch (Exception exp) {
             throw new InputMismatchException();
         }
-
-        return stack.pop();
+        if (!stack.empty())
+            return stack.pop();
+        return 0;
     }
 
     private void initOperationsAndFunctions() {
@@ -163,5 +164,4 @@ public class RPNSolver {
         constantsDict.put("π", Math.PI);
         constantsDict.put("e", Math.E);
     }
-
 }

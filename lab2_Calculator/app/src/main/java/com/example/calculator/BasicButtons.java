@@ -13,8 +13,6 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 
 
 public class BasicButtons extends Fragment implements View.OnClickListener {
@@ -55,11 +53,15 @@ public class BasicButtons extends Fragment implements View.OnClickListener {
                 case "c":
                     numbersTextView.setText("");
                     break;
-                case "+/-":
+                case "±":
                     if (expr.length() == 0)
                         return;
                     if (expr.charAt(0) != '-')
-                        expr = '-' + expr;
+                        expr = "-(" + expr + ")";
+                    else if (expr.length() > 2
+                            && expr.substring(0, 2).equals("-(")
+                            && expr.charAt(expr.length() - 1) == ')')
+                        expr = expr.substring(2, expr.length() - 1);
                     else
                         expr = expr.substring(1);
                     numbersTextView.setText(expr);
