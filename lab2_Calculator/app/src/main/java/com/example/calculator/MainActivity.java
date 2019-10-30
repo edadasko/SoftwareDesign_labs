@@ -138,15 +138,11 @@ public class MainActivity extends AppCompatActivity {
             formulaTextView.setText(String.format("%s", num));
             return;
         }
-        if (num % 1 == 0)
-            strNum = new DecimalFormat("#").format(num);
-        else {
-            String[] div = String.format("%s", num).split("\\.");
-            if (div[1].length() > 7)
-                strNum = String.format(Locale.US, "%.7f", num);
-            else
-                strNum = String.format("%s", num);
-        }
+        strNum = String.format(Locale.US, "%.7f", num);
+        strNum = strNum.replaceAll("[0]*$", "").replaceAll(".$", "");
+        
+        if(strNum.equals("-0"))
+            strNum = "0";
         formulaTextView.setText(strNum);
     }
 }
