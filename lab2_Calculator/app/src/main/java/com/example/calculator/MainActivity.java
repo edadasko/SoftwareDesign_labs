@@ -13,7 +13,6 @@ import android.os.Bundle;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import java.text.DecimalFormat;
 import java.util.InputMismatchException;
 import java.util.Locale;
 
@@ -140,7 +139,7 @@ public class MainActivity extends AppCompatActivity {
         }
         strNum = String.format(Locale.US, "%.7f", num);
         strNum = strNum.replaceAll("[0]*$", "").replaceAll(".$", "");
-        
+
         if(strNum.equals("-0"))
             strNum = "0";
         formulaTextView.setText(strNum);

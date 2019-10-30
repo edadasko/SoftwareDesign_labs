@@ -1,3 +1,4 @@
 <resources>
+    <string name="app_name">CalcDemo</string>
     <string name="not_supported">Scientific functions are not supported in a demo mode. \nPlease download full version of the app.</string>
 </resources>
