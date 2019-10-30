@@ -99,20 +99,18 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void removeSymbol(View view) {
-        String formula = numbersEditText.getText().toString();
-        if (formula.length() == 0)
+        String text = numbersEditText.getText().toString();
+        if (text.length() == 0)
             return;
-        char lastSymbol = formula.charAt(formula.length() - 1);
-        if (Character.isLetter(lastSymbol))
-            while (Character.isLetter(lastSymbol)) {
-                formula = formula.substring(0, formula.length() - 1);
-                if (formula.length() == 0)
-                    break;
-                lastSymbol = formula.charAt(formula.length() - 1);
-            }
-        else
-            formula = formula.substring(0, formula.length() - 1);
-        numbersEditText.setText(formula);
+        int select = numbersEditText.getSelectionStart();
+        if (select == 0)
+            return;
+        String newText = text.substring(0, select - 1);
+        if (select < text.length())
+            newText += text.substring(select);
+
+        numbersEditText.setText(newText);
+        numbersEditText.setSelection(select - 1);
     }
 
     public void calculate() {

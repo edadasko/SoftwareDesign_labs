@@ -11,22 +11,39 @@
         android:layout_height="match_parent"
         android:orientation="vertical">
 
-        <EditText
-            android:windowSoftInputMode="stateHidden"
-            android:id="@+id/numbersEditText"
+        <LinearLayout
+            android:orientation="horizontal"
             android:layout_width="match_parent"
-            android:layout_height="120dp"
-            android:textSize="40sp"
-            android:autoSizeTextType="uniform"
-            android:background="@color/colorWhite"
-            android:fontFamily="sans-serif-thin"
-            android:paddingStart="20sp"
-            android:paddingTop="10sp"
-            android:paddingEnd="20sp"
-            android:paddingBottom="10sp"
-            android:textAlignment="textEnd"
-            android:textColor="@color/colorBlack"
-            android:inputType="textNoSuggestions|textVisiblePassword"/>
+            android:layout_height="120dp">
+
+            <Button
+                android:layout_width="40dp"
+                android:layout_height="match_parent"
+                style="@style/Widget.AppCompat.Button.Borderless"
+                android:background="@color/colorWhite"
+                android:fontFamily="sans-serif-thin"
+                android:textSize="20sp"
+                android:text="@string/erase"
+                android:onClick="removeSymbol"/>
+
+            <EditText
+                android:windowSoftInputMode="stateHidden"
+                android:id="@+id/numbersEditText"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:textSize="40sp"
+                android:autoSizeTextType="uniform"
+                android:background="@color/colorWhite"
+                android:fontFamily="sans-serif-thin"
+                android:paddingStart="20sp"
+                android:paddingTop="10sp"
+                android:paddingEnd="20sp"
+                android:paddingBottom="10sp"
+                android:textAlignment="textEnd"
+                android:textColor="@color/colorBlack"
+                android:inputType="textNoSuggestions|textVisiblePassword"/>
+
+        </LinearLayout>
 
         <Button
             android:id="@+id/changeModeButton"
