@@ -9,23 +9,26 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        android:background="@color/colorWhite">
 
         <TextView
             android:id="@+id/formulaTextView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@color/colorBlack"
+            android:background="@color/colorWhite"
             android:paddingTop="5sp"
             android:paddingEnd="20sp"
             android:paddingStart="20sp"
             android:paddingBottom="5sp"
             android:text="@string/zero"
             android:textAlignment="textEnd"
-            android:textColor="@color/colorWhite"
             android:textSize="50sp"
+            android:fontFamily="sans-serif-thin"
+            android:textColor="@color/colorBlack"
             app:layout_constraintTop_toTopOf="parent"
-            tools:layout_editor_absoluteX="0dp" />
+            tools:layout_editor_absoluteX="0dp"
+            android:onClick="removeSymbol"/>
 
 
         <fragment

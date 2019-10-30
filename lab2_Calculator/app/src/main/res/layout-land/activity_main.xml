@@ -15,18 +15,20 @@
             android:id="@+id/formulaTextView"
             android:layout_width="match_parent"
             android:layout_height="100dp"
-            android:background="@color/colorBlack"
+            android:background="@color/colorWhite"
             android:onClick="removeSymbol"
             android:paddingStart="20sp"
             android:paddingTop="10sp"
             android:paddingEnd="20sp"
             android:paddingBottom="10sp"
             android:textAlignment="textEnd"
-            android:textColor="@color/colorWhite"
+            android:textColor="@color/colorBlack"
+            android:fontFamily="sans-serif-thin"
             android:autoSizeTextType="uniform"/>
 
 
         <LinearLayout
+            android:background="@color/colorWhite"
             android:id="@+id/containersLayout"
             android:layout_width="match_parent"
             android:layout_height="match_parent"

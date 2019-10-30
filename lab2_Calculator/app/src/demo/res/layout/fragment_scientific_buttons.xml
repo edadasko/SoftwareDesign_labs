@@ -11,6 +11,8 @@
         android:text="@string/not_supported"
         android:textSize="20sp"
         android:textAlignment="center"
-        android:gravity="center"/>
+        android:gravity="center"
+        android:fontFamily="sans-serif-condensed-light"
+        android:textColor="@color/colorBlack" />
 
 </FrameLayout>

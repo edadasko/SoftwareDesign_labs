@@ -59,7 +59,7 @@ public class MainActivity extends AppCompatActivity {
             findViewById(R.id.basicButtonsFragment).setLayoutParams(new LinearLayout.LayoutParams(
                     LayoutParams.MATCH_PARENT,
                     0,
-                    5));
+                    2));
         }
     }
 
@@ -70,11 +70,11 @@ public class MainActivity extends AppCompatActivity {
             findViewById(R.id.scientificButtonsFragment).setLayoutParams(new LinearLayout.LayoutParams(
                     LayoutParams.MATCH_PARENT,
                     0,
-                    2));
+                    1));
             findViewById(R.id.basicButtonsFragment).setLayoutParams(new LinearLayout.LayoutParams(
                     LayoutParams.MATCH_PARENT,
                     0,
-                    3));
+                    1));
         }
 
         getSupportFragmentManager().beginTransaction()
