@@ -24,7 +24,7 @@
             android:fontFamily="sans-serif-thin"
             android:textSize="20sp"
             android:text="@string/erase"
-            android:onClick="removeSymbol"/>
+            android:onClick="removeSymbols"/>
 
         <EditText
             android:id="@+id/numbersEditText"

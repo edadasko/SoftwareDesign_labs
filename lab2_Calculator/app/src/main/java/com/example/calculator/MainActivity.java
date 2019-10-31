@@ -80,7 +80,6 @@ public class MainActivity extends AppCompatActivity {
         getSupportFragmentManager().beginTransaction()
                 .show(scientificButtonsFragment)
                 .commit();
-
     }
 
     @Override
@@ -98,17 +97,24 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    public void removeSymbol(View view) {
+    public void removeSymbols(View view) {
         String text = numbersEditText.getText().toString();
         if (text.length() == 0)
             return;
-        int select = numbersEditText.getSelectionStart();
-        if (select == 0)
+        int selectStart = numbersEditText.getSelectionStart();
+        int selectEnd = numbersEditText.getSelectionEnd();
+        if (selectEnd == 0)
             return;
-        text = text.substring(0, select - 1) + text.substring(select);
+        if (selectStart == selectEnd) {
+            text = text.substring(0, selectStart - 1) + text.substring(selectStart);
+            numbersEditText.setText(text);
+            numbersEditText.setSelection(selectStart - 1);
+            return;
+        }
 
+        text = text.substring(0, selectStart) + text.substring(selectEnd);
         numbersEditText.setText(text);
-        numbersEditText.setSelection(select - 1);
+        numbersEditText.setSelection(selectStart);
     }
 
     public void calculate() {
