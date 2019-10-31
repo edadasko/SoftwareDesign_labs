@@ -55,7 +55,7 @@ public class BasicButtons extends Fragment implements View.OnClickListener {
                     ((MainActivity)getActivity()).calculate();
                     return;
                 default:
-                    append(expr, currentButtonText, numbersEditText);
+                    add(expr, currentButtonText, numbersEditText);
                     break;
             }
     }
@@ -93,26 +93,16 @@ public class BasicButtons extends Fragment implements View.OnClickListener {
     }
 
 
-    private void append(String expr, String currentButtonText, EditText numbersEditText) {
+    private void add(String expr, String currentButtonText, EditText numbersEditText) {
         if (!expr.equals("")) {
             int select = numbersEditText.getSelectionStart();
             if (select == 0) {
-                if (Character.isLetter(expr.charAt(0)))
-                    currentButtonText += "*";
-                expr = currentButtonText + expr;
-                numbersEditText.setText(expr);
-                numbersEditText.setSelection(currentButtonText.length());
+                addToBegin(expr, currentButtonText, numbersEditText);
                 return;
             }
             if (select == expr.length()) {
-                char lastSymbol = expr.charAt(select - 1);
-                if ((lastSymbol == ')' || RPNSolver.constants.contains(String.valueOf(lastSymbol)))
-                        && Character.isDigit(currentButtonText.charAt(0))) {
-                    expr += "*" + currentButtonText;
-                    numbersEditText.setText(expr);
-                    numbersEditText.setSelection(expr.length());
+                if(addToEnd(expr, currentButtonText, numbersEditText))
                     return;
-                }
             }
             expr = expr.substring(0, select) + currentButtonText + expr.substring(select);
             numbersEditText.setText(expr);
@@ -125,4 +115,23 @@ public class BasicButtons extends Fragment implements View.OnClickListener {
         numbersEditText.setSelection(currentButtonText.length());
     }
 
+    private void addToBegin(String expr, String currentButtonText, EditText numbersEditText) {
+        if (Character.isLetter(expr.charAt(0)))
+            currentButtonText += "*";
+        expr = currentButtonText + expr;
+        numbersEditText.setText(expr);
+        numbersEditText.setSelection(currentButtonText.length());
+    }
+
+    private boolean addToEnd(String expr, String currentButtonText, EditText numbersEditText) {
+        char lastSymbol = expr.charAt(expr.length() - 1);
+        if ((lastSymbol == ')' || RPNSolver.constants.contains(String.valueOf(lastSymbol)))
+                && Character.isDigit(currentButtonText.charAt(0))) {
+            expr += "*" + currentButtonText;
+            numbersEditText.setText(expr);
+            numbersEditText.setSelection(expr.length());
+            return true;
+        }
+        return false;
+    }
 }

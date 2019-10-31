@@ -105,11 +105,9 @@ public class MainActivity extends AppCompatActivity {
         int select = numbersEditText.getSelectionStart();
         if (select == 0)
             return;
-        String newText = text.substring(0, select - 1);
-        if (select < text.length())
-            newText += text.substring(select);
+        text = text.substring(0, select - 1) + text.substring(select);
 
-        numbersEditText.setText(newText);
+        numbersEditText.setText(text);
         numbersEditText.setSelection(select - 1);
     }
 

@@ -42,38 +42,18 @@ public class ScientificButtons extends Fragment implements View.OnClickListener 
             return;
 
         String expr = numbersEditText.getText().toString();
-        append(expr, currentButtonText, numbersEditText);
+        add(expr, currentButtonText, numbersEditText);
     }
 
-    private void append(String expr, String currentButtonText, EditText numbersEditText) {
-        char lastSymbol;
+    private void add(String expr, String currentButtonText, EditText numbersEditText) {
         if (!expr.equals("")) {
             int select = numbersEditText.getSelectionStart();
             if (select == 0) {
-                if (RPNSolver.functions.contains(currentButtonText))
-                    currentButtonText += "(";
-                else if (RPNSolver.constants.contains(currentButtonText))
-                    currentButtonText += "*";
-                expr = currentButtonText + expr;
-                numbersEditText.setText(expr);
-                numbersEditText.setSelection(currentButtonText.length());
+                addToBegin(expr, currentButtonText, numbersEditText);
                 return;
             }
             if (select == expr.length()) {
-                lastSymbol = expr.charAt(select - 1);
-                if (!currentButtonText.equals(")") && lastSymbol != '('
-                        && (Character.isDigit(lastSymbol) || lastSymbol == ')' ||
-                        RPNSolver.constants.contains(String.valueOf(lastSymbol)))) {
-                    if (RPNSolver.functions.contains(currentButtonText))
-                        currentButtonText += "(";
-                    expr += "*" + currentButtonText;
-                }
-                else if (RPNSolver.functions.contains(currentButtonText))
-                    expr += currentButtonText + "(";
-                else
-                    expr += currentButtonText;
-                numbersEditText.setText(expr);
-                numbersEditText.setSelection(expr.length());
+                addToEnd(expr, currentButtonText, numbersEditText);
                 return;
             }
             if (RPNSolver.functions.contains(currentButtonText))
@@ -89,6 +69,34 @@ public class ScientificButtons extends Fragment implements View.OnClickListener 
             numbersEditText.requestFocus();
             numbersEditText.setSelection(currentButtonText.length());
         }
+    }
+
+    private void addToBegin(String expr, String currentButtonText, EditText numbersEditText) {
+        if (RPNSolver.functions.contains(currentButtonText))
+            currentButtonText += "(";
+        else if (RPNSolver.constants.contains(currentButtonText))
+            currentButtonText += "*";
+        expr = currentButtonText + expr;
+        numbersEditText.setText(expr);
+        numbersEditText.setSelection(currentButtonText.length());
+    }
+
+    private void addToEnd(String expr, String currentButtonText, EditText numbersEditText) {
+        char lastSymbol;
+        lastSymbol = expr.charAt(expr.length() - 1);
+        if (!currentButtonText.equals(")") && lastSymbol != '('
+                && (Character.isDigit(lastSymbol) || lastSymbol == ')' ||
+                RPNSolver.constants.contains(String.valueOf(lastSymbol)))) {
+            if (RPNSolver.functions.contains(currentButtonText))
+                currentButtonText += "(";
+            expr += "*" + currentButtonText;
+        }
+        else if (RPNSolver.functions.contains(currentButtonText))
+            expr += currentButtonText + "(";
+        else
+            expr += currentButtonText;
+        numbersEditText.setText(expr);
+        numbersEditText.setSelection(expr.length());
     }
 
 }

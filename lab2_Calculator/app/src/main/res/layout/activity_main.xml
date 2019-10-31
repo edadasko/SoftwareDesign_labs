@@ -42,7 +42,6 @@
                 android:textAlignment="textEnd"
                 android:textColor="@color/colorBlack"
                 android:inputType="textNoSuggestions|textVisiblePassword"/>
-
         </LinearLayout>
 
         <Button
