@@ -14,7 +14,10 @@ import android.os.Bundle;
 import android.widget.Toast;
 
 import java.text.DecimalFormat;
+import java.text.DecimalFormatSymbols;
+import java.text.NumberFormat;
 import java.util.InputMismatchException;
+import java.util.Locale;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -141,7 +144,8 @@ public class MainActivity extends AppCompatActivity {
             numbersEditText.setText(String.format("%s", num));
             return;
         }
-        strNum = new DecimalFormat("#.########").format(num);
+        DecimalFormatSymbols symbols = new DecimalFormatSymbols(Locale.US);
+        strNum = new DecimalFormat("#.########", symbols).format(num);
 
         if(strNum.equals("-0"))
             strNum = "0";

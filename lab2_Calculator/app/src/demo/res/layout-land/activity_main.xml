@@ -41,7 +41,6 @@
             android:textAlignment="textEnd"
             android:fontFamily="sans-serif-thin"
             android:textColor="@color/colorBlack"
-            android:onClick="removeSymbol"
             android:inputType="textNoSuggestions|textVisiblePassword"/>
     </LinearLayout>
 
