@@ -15,7 +15,6 @@ import android.widget.Toast;
 
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
-import java.text.NumberFormat;
 import java.util.InputMismatchException;
 import java.util.Locale;
 

@@ -151,18 +151,18 @@ class RPNSolver {
         functionsDict = new HashMap<>();
         constantsDict = new HashMap<>();
 
-        operationsDict.put("+", (a, b) -> a + b);
+        operationsDict.put("+", Double::sum);
         operationsDict.put("-", (a, b) -> a - b);
         operationsDict.put("*", (a, b) -> a * b);
         operationsDict.put("/", (a, b) -> a / b);
-        operationsDict.put("^", (a, b) -> Math.pow(a, b));
+        operationsDict.put("^", Math::pow);
 
-        functionsDict.put("sin", a -> Math.sin(a));
-        functionsDict.put("cos", a -> Math.cos(a));
-        functionsDict.put("tg", a -> Math.tan(a));
+        functionsDict.put("sin", Math::sin);
+        functionsDict.put("cos", Math::cos);
+        functionsDict.put("tg", Math::tan);
         functionsDict.put("ctg", a -> 1 / Math.tan(a));
-        functionsDict.put("ln", a -> Math.log(a));
-        functionsDict.put("exp", a -> Math.exp(a));
+        functionsDict.put("ln", Math::log);
+        functionsDict.put("exp", Math::exp);
         functionsDict.put("log2", a -> Math.log(a) / Math.log(2));
         functionsDict.put("log10", a -> Math.log(a) / Math.log(10));
 
