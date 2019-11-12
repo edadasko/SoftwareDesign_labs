@@ -1,5 +1,6 @@
 package com.example.notes;
 
+import android.annotation.SuppressLint;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;

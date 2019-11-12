@@ -12,7 +12,7 @@ class Note {
     private String body;
     private List<String> tags;
 
-    public Note(String title, String body, String tags) {
+    Note(String title, String body, String tags) {
         this.title = (title.equals("")) ?
                 (new SimpleDateFormat("dd-MM-yyyy HH:mm:ss")).format(new Date()) : title;
 
@@ -20,23 +20,23 @@ class Note {
         this.tags = Arrays.asList(tags.split(" "));
     }
 
-    public String getTitle() {
+    String getTitle() {
         return title;
     }
 
-    public String getBody() {
+    String getBody() {
         return body;
     }
 
-    public List<String> getTags() {
+    List<String> getTags() {
         return tags;
     }
 
-    public String getStringOfTags() {
+    String getStringOfTags() {
         return String.join(", ", tags);
     }
 
-    public boolean hasTag(String tag) {
+    boolean hasTag(String tag) {
         return tags.contains(tag);
     }
 

@@ -6,20 +6,20 @@
 
     <TextView
         android:id="@+id/titleView"
-        android:layout_height="30dp"
+        android:layout_height="wrap_content"
         android:layout_width="match_parent"
         android:textSize="18sp"
         android:textStyle="bold"/>
 
     <TextView
         android:id="@+id/tagsView"
-        android:layout_height="30dp"
+        android:layout_height="wrap_content"
         android:layout_width="match_parent"
         android:textSize="18sp" />
 
     <TextView
         android:id="@+id/bodyView"
-        android:layout_height="100dp"
+        android:layout_height="wrap_content"
         android:layout_width="match_parent"
         android:textSize="18sp" />
 
