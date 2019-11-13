@@ -2,12 +2,12 @@ package com.example.notes;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Intent;
 import android.content.pm.ActivityInfo;
-import android.content.res.Configuration;
 import android.os.Bundle;
 import android.view.View;
-import android.widget.GridView;
-import android.widget.ListView;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -16,12 +16,10 @@ public class MainActivity extends AppCompatActivity {
 
     private List<Note> notes = new ArrayList<>();
 
-    View notesList;
+    AdapterView notesList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR);
-
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
@@ -30,10 +28,16 @@ public class MainActivity extends AppCompatActivity {
         NoteAdapter stateAdapter = new NoteAdapter(this, R.layout.note, notes);
         notesList = findViewById(R.id.notesList);
 
-        if (this.getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT)
-            ((ListView)notesList).setAdapter(stateAdapter);
-        else
-            ((GridView)notesList).setAdapter(stateAdapter);
+        notesList.setAdapter(stateAdapter);
+        notesList.setOnItemClickListener(new OnItemClickListener(){
+            @Override
+            public void onItemClick(AdapterView<?> parent, View v, int position, long id) {
+                Intent intent = new Intent(MainActivity.this, NoteActivity.class);
+                intent.putExtra("orientation", getResources().getConfiguration().orientation);
+                intent.putExtra("note", notes.get(position));
+                startActivity(intent);
+            }
+        });
     }
 
     private void setInitialData(){

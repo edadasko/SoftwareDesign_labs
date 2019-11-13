@@ -2,12 +2,12 @@ package com.example.notes;
 
 import android.icu.text.SimpleDateFormat;
 
-import java.util.ArrayList;
+import java.io.Serializable;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
-class Note {
+class Note implements Serializable {
     private String title;
     private String body;
     private List<String> tags;
@@ -39,6 +39,4 @@ class Note {
     boolean hasTag(String tag) {
         return tags.contains(tag);
     }
-
-
 }
