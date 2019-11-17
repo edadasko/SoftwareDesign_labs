@@ -9,24 +9,53 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        android:weightSum="10">
 
-        <EditText
-            android:id="@+id/titleEdit"
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="@string/title" />
+            android:layout_height="0dp"
+            android:layout_weight="9"
+            android:orientation="vertical">
 
-        <EditText
-            android:id="@+id/tagsEdit"
+            <EditText
+                android:id="@+id/titleEdit"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="@string/title" />
+
+            <EditText
+                android:id="@+id/tagsEdit"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="@string/tags" />
+
+            <EditText
+                android:id="@+id/bodyEdit"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:gravity="top|start"/>
+        </LinearLayout>
+
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="@string/tags" />
-        
-        <EditText
-            android:id="@+id/bodyEdit"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"/>
+            android:layout_height="0dp"
+            android:orientation="horizontal"
+            android:layout_weight="1"
+            android:weightSum="2">
+
+            <Button
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:text="@string/save" />
+            <Button
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:text="@string/delete" />
+        </LinearLayout>
+
     </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

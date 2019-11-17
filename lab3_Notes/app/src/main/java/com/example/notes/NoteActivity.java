@@ -27,7 +27,9 @@ public class NoteActivity extends AppCompatActivity {
         note = (Note)arguments.getSerializable("note");
 
         assert note != null;
-        title.setText(note.getTitle());
+
+        if (note.hasTitle())
+            title.setText(note.getTitle());
         tags.setText(note.getStringOfTags());
         body.setText(note.getBody());
     }
