@@ -1,64 +1,104 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".NoteActivity">
 
-    <LinearLayout
+    <com.google.android.material.card.MaterialCardView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical"
-        android:weightSum="10">
+        app:cardBackgroundColor="@color/noteYellow"
+        app:cardCornerRadius="10dp"
+        android:layout_margin="10dp">
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="9"
-            android:orientation="vertical">
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:weightSum="10"
+            android:layout_marginTop="10dp"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp">
 
-            <EditText
-                android:id="@+id/titleEdit"
+            <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:hint="@string/title" />
+                android:layout_height="0dp"
+                android:layout_weight="9"
+                android:orientation="vertical">
 
-            <EditText
-                android:id="@+id/tagsEdit"
+                <com.google.android.material.textfield.TextInputLayout
+                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="@string/title"
+                    android:layout_marginBottom="5dp">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/titleEdit"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content" />
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <com.google.android.material.textfield.TextInputLayout
+                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="@string/tags">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/tagsEdit"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content" />
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <com.google.android.material.textfield.TextInputLayout
+                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/bodyEdit"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:gravity="top|start" />
+
+                </com.google.android.material.textfield.TextInputLayout>
+
+            </LinearLayout>
+
+            <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:hint="@string/tags" />
-
-            <EditText
-                android:id="@+id/bodyEdit"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:gravity="top|start"/>
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:orientation="horizontal"
-            android:layout_weight="1"
-            android:weightSum="2">
-
-            <Button
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
+                android:layout_height="0dp"
+                android:orientation="horizontal"
                 android:layout_weight="1"
-                android:text="@string/save"
-                android:onClick="Save"/>
+                android:weightSum="2">
 
-            <Button
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:text="@string/delete"
-                android:onClick="Delete"/>
+                <com.google.android.material.button.MaterialButton
+                    android:layout_width="0dp"
+                    style="@style/Widget.MaterialComponents.Button.TextButton"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:text="@string/save"
+                    android:textColor="@color/colorPrimaryDark"
+                    android:layout_gravity="bottom"
+                    android:onClick="Save"/>
+
+                <com.google.android.material.button.MaterialButton
+                    android:layout_width="0dp"
+                    style="@style/Widget.MaterialComponents.Button.TextButton"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:text="@string/delete"
+                    android:textColor="@color/colorPrimaryDark"
+                    android:layout_gravity="bottom"
+                    android:onClick="Delete"/>
+            </LinearLayout>
+
         </LinearLayout>
-
-    </LinearLayout>
+    </com.google.android.material.card.MaterialCardView>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

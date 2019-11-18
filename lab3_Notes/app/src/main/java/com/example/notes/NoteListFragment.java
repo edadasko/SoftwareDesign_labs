@@ -94,12 +94,15 @@ public class NoteListFragment extends Fragment
         notes.addAll(dbAdapter.getNotes());
         filterNotesByTag();
         dbAdapter.close();
-        noteAdapter.notifyDataSetChanged();
+        if(noteAdapter != null)
+            noteAdapter.notifyDataSetChanged();
     }
 
     private void filterNotesByTag() {
-        if (tagForSearching.equals(""))
+        if (tagForSearching.equals("")) {
+            SortNotes();
             return;
+        }
         List<Note> filteredNotes = new ArrayList<>();
         for (Note note: notes) {
             if (note.hasTag(tagForSearching.toLowerCase()))

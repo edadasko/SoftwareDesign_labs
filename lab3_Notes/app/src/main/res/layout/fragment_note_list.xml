@@ -3,11 +3,14 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".NoteListFragment">
+    tools:context=".NoteListFragment"
+    android:padding="10dp">
 
     <ListView
         android:id="@+id/notesList"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="match_parent"
+        android:divider="@color/white"
+        android:dividerHeight="20dp"/>
 
 </FrameLayout>

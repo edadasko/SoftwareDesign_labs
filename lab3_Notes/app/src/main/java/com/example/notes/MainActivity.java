@@ -26,7 +26,8 @@ public class MainActivity extends AppCompatActivity {
     private OnActivitySortListener sortListener;
     private OnActivityFindListener findListener;
 
-    Button addButton;
+    private EditText tagFindEdit;
+
     private String[] sortTypes = {"Date", "Title"};
 
 
@@ -38,8 +39,6 @@ public class MainActivity extends AppCompatActivity {
         Fragment fragment = getSupportFragmentManager().findFragmentById(R.id.notesListFragment);
         sortListener = (OnActivitySortListener) fragment;
         findListener = (OnActivityFindListener) fragment;
-
-        addButton = findViewById(R.id.addButton);
 
         Spinner spinner = findViewById(R.id.sortSpinner);
         ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, sortTypes);
@@ -58,7 +57,7 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        EditText tagFindEdit = findViewById(R.id.tagFindEdit);
+        tagFindEdit = findViewById(R.id.tagFindEdit);
         tagFindEdit.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
