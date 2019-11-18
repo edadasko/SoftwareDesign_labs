@@ -61,11 +61,7 @@ public class NotesDatabaseAdapter {
 
 
     public long insert(Note note) {
-        ContentValues cv = new ContentValues();
-        cv.put(NotesDatabaseHelper.COLUMN_TITLE, note.hasTitle() ? note.getTitle() : "");
-        cv.put(NotesDatabaseHelper.COLUMN_BODY, note.getBody());
-        cv.put(NotesDatabaseHelper.COLUMN_TAGS, note.getStringOfTags());
-        cv.put(NotesDatabaseHelper.COLUMN_DATE, new SimpleDateFormat("dd-MM-yyyy HH:mm:ss").format(new Date()));
+        ContentValues cv = getContentValues(note);
         return  database.insert(NotesDatabaseHelper.TABLE, null, cv);
     }
 
@@ -75,12 +71,17 @@ public class NotesDatabaseAdapter {
     }
 
     public long update(Note note) {
+        ContentValues cv = getContentValues(note);
+        return database.update(NotesDatabaseHelper.TABLE, cv,
+                NotesDatabaseHelper.COLUMN_ID + "=" + note.getId(), null);
+    }
+
+    private ContentValues getContentValues(Note note) {
         ContentValues cv = new ContentValues();
         cv.put(NotesDatabaseHelper.COLUMN_TITLE, note.hasTitle() ? note.getTitle() : "");
         cv.put(NotesDatabaseHelper.COLUMN_BODY, note.getBody());
         cv.put(NotesDatabaseHelper.COLUMN_TAGS, note.getStringOfTags());
         cv.put(NotesDatabaseHelper.COLUMN_DATE, new SimpleDateFormat("dd-MM-yyyy HH:mm:ss").format(new Date()));
-        return database.update(NotesDatabaseHelper.TABLE, cv,
-                NotesDatabaseHelper.COLUMN_ID + "=" + note.getId(), null);
+        return cv;
     }
 }

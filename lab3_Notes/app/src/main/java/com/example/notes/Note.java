@@ -60,6 +60,10 @@ class Note implements Serializable {
         return body;
     }
 
+    Date getDate() {
+        return creatingDate;
+    }
+
     List<String> getTags() {
         return tags;
     }
