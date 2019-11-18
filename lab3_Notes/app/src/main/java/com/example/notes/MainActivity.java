@@ -16,7 +16,8 @@ public class MainActivity extends AppCompatActivity {
 
     private List<Note> notes = new ArrayList<>();
 
-    AdapterView notesList;
+    AdapterView notesListView;
+    NoteAdapter noteAdapter;
     Button addButton;
 
     @Override
@@ -24,34 +25,35 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        setInitialData();
-
-        NoteAdapter stateAdapter = new NoteAdapter(this, R.layout.note, notes);
-        notesList = findViewById(R.id.notesList);
         addButton = findViewById(R.id.addButton);
+        notesListView = findViewById(R.id.notesList);
 
-        notesList.setAdapter(stateAdapter);
-        notesList.setOnItemClickListener(new OnItemClickListener() {
+        notesListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
-            public void onItemClick(AdapterView<?> parent, View v, int position, long id) {
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Intent intent = new Intent(MainActivity.this, NoteActivity.class);
                 intent.putExtra("note", notes.get(position));
                 startActivity(intent);
             }
         });
-
     }
 
-    private void setInitialData() {
-        notes.add(new Note("note 1", "aaa a a a aaa ", "a b c d"));
-        notes.add(new Note("note 2", "weffwefewwef", "b c d f"));
-        notes.add(new Note("", "addfs", "c d"));
-        notes.add(new Note("note 4", "xcvvcx ", "a b"));
+    @Override
+    public void onResume() {
+        super.onResume();
+        NotesDatabaseAdapter adapter = new NotesDatabaseAdapter(this);
+        adapter.open();
+
+        notes = adapter.getNotes();
+
+        noteAdapter = new NoteAdapter(this, R.layout.note, notes);
+        notesListView = findViewById(R.id.notesList);
+        notesListView.setAdapter(noteAdapter);
+        adapter.close();
     }
 
     public void addButtonClick(View view) {
         Intent intent = new Intent(MainActivity.this, NoteActivity.class);
-        intent.putExtra("orientation", getResources().getConfiguration().orientation);
         intent.putExtra("note", new Note());
         startActivity(intent);
     }

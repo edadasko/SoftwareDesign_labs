@@ -8,20 +8,28 @@ import java.util.Date;
 import java.util.List;
 
 class Note implements Serializable {
+
+    private long id;
     private String title;
     private String body;
     private List<String> tags;
 
-    Note(String title, String body, String tags) {
+    Note(long id, String title, String body, String tags) {
+        this.id = id;
         this.title = title;
         this.body = body;
         this.tags = Arrays.asList(tags.split(" "));
     }
 
     Note() {
+        this.id = 0;
         this.title = "";
         this.body = "";
         this.tags = null;
+    }
+
+    long getId() {
+        return id;
     }
 
     String getTitle() {
@@ -47,7 +55,6 @@ class Note implements Serializable {
     boolean hasTitle() {
         return !title.equals("");
     }
-
 
     boolean hasTag(String tag) {
         return tags.contains(tag);
