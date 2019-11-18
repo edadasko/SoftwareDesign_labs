@@ -4,8 +4,10 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.Gravity;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.Toast;
 
 public class NoteActivity extends AppCompatActivity {
 
@@ -48,6 +50,11 @@ public class NoteActivity extends AppCompatActivity {
         String body = bodyEdit.getText().toString();
         String tags = tagsEdit.getText().toString();
 
+        if (body.equals("")) {
+            showErrorToast();
+            return;
+        }
+
         Note newNote = new Note(note.getId(), title, body, tags);
 
         adapter.open();
@@ -74,5 +81,13 @@ public class NoteActivity extends AppCompatActivity {
         Intent intent = new Intent(this, MainActivity.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
         startActivity(intent);
+    }
+
+    private void showErrorToast() {
+        Toast toast = Toast.makeText(getApplicationContext(),
+                getResources().getString(R.string.bodyNotFilledError),
+                Toast.LENGTH_SHORT);
+        toast.setGravity(Gravity.CENTER, 0, 0);
+        toast.show();
     }
 }

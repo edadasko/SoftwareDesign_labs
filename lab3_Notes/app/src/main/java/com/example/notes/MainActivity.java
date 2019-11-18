@@ -23,5 +23,4 @@ public class MainActivity extends AppCompatActivity {
         intent.putExtra("note", new Note());
         startActivity(intent);
     }
-
 }
