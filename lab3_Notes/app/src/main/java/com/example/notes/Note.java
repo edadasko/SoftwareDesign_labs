@@ -20,6 +20,7 @@ class Note implements Serializable {
         this.id = id;
         this.title = title;
         this.body = body;
+        tags = tags.toLowerCase();
         this.tags = Arrays.asList(tags.split(" "));
         this.creatingDate = new Date();
     }
@@ -79,6 +80,6 @@ class Note implements Serializable {
     }
 
     boolean hasTag(String tag) {
-        return tags.contains(tag);
+        return tags.contains(tag.toLowerCase());
     }
 }

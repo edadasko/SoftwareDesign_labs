@@ -5,18 +5,26 @@ import androidx.fragment.app.Fragment;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.Spinner;
 
 public class MainActivity extends AppCompatActivity {
+
     public interface OnActivitySortListener {
-        void onActivitySortListener(String string);
+        void onActivitySortListener(String sortType);
+    }
+    public interface OnActivityFindListener {
+        void onActivityFindListener(String tag);
     }
 
-    private OnActivitySortListener mListener;
+    private OnActivitySortListener sortListener;
+    private OnActivityFindListener findListener;
 
     Button addButton;
     private String[] sortTypes = {"Date", "Title"};
@@ -28,12 +36,8 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         Fragment fragment = getSupportFragmentManager().findFragmentById(R.id.notesListFragment);
-            if (fragment instanceof OnActivitySortListener) {
-                mListener = (OnActivitySortListener) fragment;
-            } else {
-                throw new RuntimeException(fragment.toString()
-                        + " must implement onActivitySortListener");
-            }
+        sortListener = (OnActivitySortListener) fragment;
+        findListener = (OnActivityFindListener) fragment;
 
         addButton = findViewById(R.id.addButton);
 
@@ -42,19 +46,32 @@ public class MainActivity extends AppCompatActivity {
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinner.setAdapter(adapter);
 
-        AdapterView.OnItemSelectedListener itemSelectedListener = new AdapterView.OnItemSelectedListener() {
+        spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 String sortType = (String)parent.getItemAtPosition(position);
-                mListener.onActivitySortListener(sortType);
+                sortListener.onActivitySortListener(sortType);
             }
 
             @Override
             public void onNothingSelected(AdapterView<?> parent) {
             }
-        };
-        spinner.setOnItemSelectedListener(itemSelectedListener);
+        });
 
+        EditText tagFindEdit = findViewById(R.id.tagFindEdit);
+        tagFindEdit.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+            }
+            @Override
+            public void afterTextChanged(Editable editable) {
+                findListener.onActivityFindListener(editable.toString());
+            }
+        });
     }
 
     public void addButtonClick(View view) {

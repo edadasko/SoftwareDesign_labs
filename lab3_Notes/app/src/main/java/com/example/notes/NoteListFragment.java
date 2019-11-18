@@ -14,12 +14,14 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 
-public class NoteListFragment extends Fragment implements MainActivity.OnActivitySortListener {
+public class NoteListFragment extends Fragment
+        implements MainActivity.OnActivitySortListener, MainActivity.OnActivityFindListener {
 
     private List<Note> notes = new ArrayList<>();
     private AdapterView notesListView;
     private NoteAdapter noteAdapter;
-    private String SortType = "Date";
+    private String sortType = "Date";
+    private String tagForSearching = "";
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -41,20 +43,22 @@ public class NoteListFragment extends Fragment implements MainActivity.OnActivit
     @Override
     public void onResume() {
         super.onResume();
-        NotesDatabaseAdapter adapter = new NotesDatabaseAdapter(getContext());
-        adapter.open();
+        NotesDatabaseAdapter dbAdapter = new NotesDatabaseAdapter(getContext());
+        dbAdapter.open();
 
-        notes = adapter.getNotes();
+        notes = dbAdapter.getNotes();
         SortNotes();
+        if(!tagForSearching.equals(""))
+            filterNotesByTag();
 
         noteAdapter = new NoteAdapter(getContext(), R.layout.note, notes);
         notesListView = getView().findViewById(R.id.notesList);
         notesListView.setAdapter(noteAdapter);
-        adapter.close();
+        dbAdapter.close();
     }
 
     private void SortNotes() {
-        switch (SortType) {
+        switch (sortType) {
             case "Date":
                 notes.sort(new Comparator<Note>() {
                     @Override
@@ -67,7 +71,7 @@ public class NoteListFragment extends Fragment implements MainActivity.OnActivit
                 notes.sort(new Comparator<Note>() {
                     @Override
                     public int compare(Note o1, Note o2) {
-                        return o1.getTitle().compareTo(o2.getTitle());
+                        return o1.getTitle().toLowerCase().compareTo(o2.getTitle().toLowerCase());
                     }
                 });
                 break;
@@ -76,9 +80,33 @@ public class NoteListFragment extends Fragment implements MainActivity.OnActivit
 
     @Override
     public void onActivitySortListener (String sortType) {
-        SortType = sortType;
+        this.sortType = sortType;
         SortNotes();
         noteAdapter.notifyDataSetChanged();
     }
 
+    @Override
+    public void onActivityFindListener (String tag) {
+        tagForSearching = tag;
+        NotesDatabaseAdapter dbAdapter = new NotesDatabaseAdapter(getContext());
+        dbAdapter.open();
+        notes.clear();
+        notes.addAll(dbAdapter.getNotes());
+        filterNotesByTag();
+        dbAdapter.close();
+        noteAdapter.notifyDataSetChanged();
+    }
+
+    private void filterNotesByTag() {
+        if (tagForSearching.equals(""))
+            return;
+        List<Note> filteredNotes = new ArrayList<>();
+        for (Note note: notes) {
+            if (note.hasTag(tagForSearching.toLowerCase()))
+                filteredNotes.add(note);
+        }
+        SortNotes();
+        notes.clear();
+        notes.addAll(filteredNotes);
+    }
 }
