@@ -5,8 +5,10 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.DatabaseUtils;
 import android.database.sqlite.SQLiteDatabase;
+import android.icu.text.SimpleDateFormat;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 public class NotesDatabaseAdapter {
@@ -30,7 +32,7 @@ public class NotesDatabaseAdapter {
     private Cursor getAllEntries() {
         String[] columns = new String[] {NotesDatabaseHelper.COLUMN_ID,
                 NotesDatabaseHelper.COLUMN_TITLE, NotesDatabaseHelper.COLUMN_BODY,
-                NotesDatabaseHelper.COLUMN_TAGS};
+                NotesDatabaseHelper.COLUMN_TAGS, NotesDatabaseHelper.COLUMN_DATE};
         return  database.query(NotesDatabaseHelper.TABLE, columns,
                 null, null, null, null, null);
     }
@@ -44,7 +46,8 @@ public class NotesDatabaseAdapter {
                 String title = cursor.getString(cursor.getColumnIndex(NotesDatabaseHelper.COLUMN_TITLE));
                 String body = cursor.getString(cursor.getColumnIndex(NotesDatabaseHelper.COLUMN_BODY));
                 String tags = cursor.getString(cursor.getColumnIndex(NotesDatabaseHelper.COLUMN_TAGS));
-                notes.add(new Note(id, title, body, tags));
+                String date = cursor.getString(cursor.getColumnIndex(NotesDatabaseHelper.COLUMN_DATE));
+                notes.add(new Note(id, title, body, tags, date));
             }
             while (cursor.moveToNext());
         }
@@ -56,26 +59,13 @@ public class NotesDatabaseAdapter {
         return DatabaseUtils.queryNumEntries(database, NotesDatabaseHelper.TABLE);
     }
 
-    public Note getNote(long id) {
-        Note note = null;
-        String query = String.format("SELECT * FROM %s WHERE %s=?",
-                NotesDatabaseHelper.TABLE, NotesDatabaseHelper.COLUMN_ID);
-        Cursor cursor = database.rawQuery(query, new String[]{ String.valueOf(id)});
-        if(cursor.moveToFirst()){
-            String title = cursor.getString(cursor.getColumnIndex(NotesDatabaseHelper.COLUMN_TITLE));
-            String body = cursor.getString(cursor.getColumnIndex(NotesDatabaseHelper.COLUMN_BODY));
-            String tags = cursor.getString(cursor.getColumnIndex(NotesDatabaseHelper.COLUMN_TAGS));
-            note = new Note(id, title, body, tags);
-        }
-        cursor.close();
-        return note;
-    }
 
     public long insert(Note note) {
         ContentValues cv = new ContentValues();
         cv.put(NotesDatabaseHelper.COLUMN_TITLE, note.hasTitle() ? note.getTitle() : "");
         cv.put(NotesDatabaseHelper.COLUMN_BODY, note.getBody());
         cv.put(NotesDatabaseHelper.COLUMN_TAGS, note.getStringOfTags());
+        cv.put(NotesDatabaseHelper.COLUMN_DATE, new SimpleDateFormat("dd-MM-yyyy HH:mm:ss").format(new Date()));
         return  database.insert(NotesDatabaseHelper.TABLE, null, cv);
     }
 
@@ -89,6 +79,7 @@ public class NotesDatabaseAdapter {
         cv.put(NotesDatabaseHelper.COLUMN_TITLE, note.hasTitle() ? note.getTitle() : "");
         cv.put(NotesDatabaseHelper.COLUMN_BODY, note.getBody());
         cv.put(NotesDatabaseHelper.COLUMN_TAGS, note.getStringOfTags());
+        cv.put(NotesDatabaseHelper.COLUMN_DATE, new SimpleDateFormat("dd-MM-yyyy HH:mm:ss").format(new Date()));
         return database.update(NotesDatabaseHelper.TABLE, cv,
                 NotesDatabaseHelper.COLUMN_ID + "=" + note.getId(), null);
     }

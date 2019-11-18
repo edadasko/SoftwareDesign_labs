@@ -3,6 +3,7 @@ package com.example.notes;
 import android.icu.text.SimpleDateFormat;
 
 import java.io.Serializable;
+import java.text.ParseException;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
@@ -21,6 +22,16 @@ class Note implements Serializable {
         this.body = body;
         this.tags = Arrays.asList(tags.split(" "));
         this.creatingDate = new Date();
+    }
+
+    Note(long id, String title, String body, String tags, String date) {
+        this(id, title, body, tags);
+        try {
+            this.creatingDate = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss").parse(date);
+        }
+        catch (ParseException exp) {
+            this.creatingDate = new Date();
+        }
     }
 
     Note() {
@@ -42,7 +53,7 @@ class Note implements Serializable {
     }
 
     private String getStringOfDate() {
-        return (new SimpleDateFormat("dd-MM-yyyy HH:mm:ss")).format(creatingDate);
+        return new SimpleDateFormat("dd-MM-yyyy HH:mm:ss").format(creatingDate);
     }
 
     String getBody() {

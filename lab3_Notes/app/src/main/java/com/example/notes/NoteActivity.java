@@ -48,13 +48,13 @@ public class NoteActivity extends AppCompatActivity {
         String body = bodyEdit.getText().toString();
         String tags = tagsEdit.getText().toString();
 
-        Note user = new Note(note.getId(), title, body, tags);
+        Note newNote = new Note(note.getId(), title, body, tags);
 
         adapter.open();
         if (note.getId() != 0)
-            adapter.update(user);
+            adapter.update(newNote);
         else
-            adapter.insert(user);
+            adapter.insert(newNote);
 
         adapter.close();
         goHome();
