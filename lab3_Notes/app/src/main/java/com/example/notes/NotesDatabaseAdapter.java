@@ -73,7 +73,7 @@ public class NotesDatabaseAdapter {
 
     public long insert(Note note) {
         ContentValues cv = new ContentValues();
-        cv.put(NotesDatabaseHelper.COLUMN_TITLE, note.getTitle());
+        cv.put(NotesDatabaseHelper.COLUMN_TITLE, note.hasTitle() ? note.getTitle() : "");
         cv.put(NotesDatabaseHelper.COLUMN_BODY, note.getBody());
         cv.put(NotesDatabaseHelper.COLUMN_TAGS, note.getStringOfTags());
         return  database.insert(NotesDatabaseHelper.TABLE, null, cv);
@@ -86,7 +86,7 @@ public class NotesDatabaseAdapter {
 
     public long update(Note note) {
         ContentValues cv = new ContentValues();
-        cv.put(NotesDatabaseHelper.COLUMN_TITLE, note.getTitle());
+        cv.put(NotesDatabaseHelper.COLUMN_TITLE, note.hasTitle() ? note.getTitle() : "");
         cv.put(NotesDatabaseHelper.COLUMN_BODY, note.getBody());
         cv.put(NotesDatabaseHelper.COLUMN_TAGS, note.getStringOfTags());
         return database.update(NotesDatabaseHelper.TABLE, cv,

@@ -26,6 +26,10 @@ public class NoteActivity extends AppCompatActivity {
         bodyEdit = findViewById(R.id.bodyEdit);
         adapter = new NotesDatabaseAdapter(this);
 
+        fillEdits();
+    }
+
+    private void fillEdits() {
         Bundle arguments = getIntent().getExtras();
 
         assert arguments != null;

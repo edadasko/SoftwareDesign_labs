@@ -12,6 +12,7 @@ class Note implements Serializable {
     private long id;
     private String title;
     private String body;
+    private Date creatingDate;
     private List<String> tags;
 
     Note(long id, String title, String body, String tags) {
@@ -19,6 +20,7 @@ class Note implements Serializable {
         this.title = title;
         this.body = body;
         this.tags = Arrays.asList(tags.split(" "));
+        this.creatingDate = new Date();
     }
 
     Note() {
@@ -26,6 +28,7 @@ class Note implements Serializable {
         this.title = "";
         this.body = "";
         this.tags = null;
+        this.creatingDate = new Date();
     }
 
     long getId() {
@@ -34,8 +37,12 @@ class Note implements Serializable {
 
     String getTitle() {
         if (title.equals(""))
-            return (new SimpleDateFormat("dd-MM-yyyy HH:mm:ss")).format(new Date());
+            return getStringOfDate();
         return title;
+    }
+
+    private String getStringOfDate() {
+        return (new SimpleDateFormat("dd-MM-yyyy HH:mm:ss")).format(creatingDate);
     }
 
     String getBody() {
