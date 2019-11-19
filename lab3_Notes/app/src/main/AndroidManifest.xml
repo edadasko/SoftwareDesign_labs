@@ -11,9 +11,9 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".NoteActivity" android:screenOrientation="sensor" />
+        <activity android:name=".activities.NoteActivity" android:screenOrientation="sensor" />
         <activity
-            android:name=".MainActivity" android:screenOrientation="sensor" >
+            android:name=".activities.MainActivity" android:screenOrientation="sensor" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

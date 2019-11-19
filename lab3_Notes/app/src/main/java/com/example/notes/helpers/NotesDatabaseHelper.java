@@ -1,4 +1,4 @@
-package com.example.notes;
+package com.example.notes.helpers;
 
 import android.content.ContentValues;
 import android.content.Context;
@@ -11,7 +11,7 @@ import java.util.Date;
 public class NotesDatabaseHelper extends SQLiteOpenHelper {
     private static final String DATABASE_NAME = "notes.db";
     private static final int SCHEMA = 2;
-    static final String TABLE = "notes";
+    public static final String TABLE = "notes";
 
     public static final String COLUMN_ID = "_id";
     public static final String COLUMN_TITLE = "title";

@@ -1,13 +1,16 @@
-package com.example.notes;
+package com.example.notes.activities;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.view.Gravity;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.Toast;
+
+import com.example.notes.models.Note;
+import com.example.notes.adapters.NotesDatabaseAdapter;
+import com.example.notes.R;
 
 public class NoteActivity extends AppCompatActivity {
 
@@ -45,7 +48,7 @@ public class NoteActivity extends AppCompatActivity {
         bodyEdit.setText(note.getBody());
     }
 
-    public void Save(View view){
+    public void save(View view){
         String title = titleEdit.getText().toString();
         String body = bodyEdit.getText().toString();
         String tags = tagsEdit.getText().toString();
@@ -64,20 +67,20 @@ public class NoteActivity extends AppCompatActivity {
             adapter.insert(newNote);
 
         adapter.close();
-        goHome();
+        goBack();
     }
 
-    public void Delete(View view){
+    public void delete(View view){
         if (note.getId() == 0)
-            goHome();
+            goBack();
 
         adapter.open();
         adapter.delete(note.getId());
         adapter.close();
-        goHome();
+        goBack();
     }
 
-    private void goHome(){
+    private void goBack(){
         this.onBackPressed();
     }
 

@@ -1,11 +1,13 @@
-package com.example.notes;
+package com.example.notes.adapters;
 
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
-import android.database.DatabaseUtils;
 import android.database.sqlite.SQLiteDatabase;
 import android.icu.text.SimpleDateFormat;
+
+import com.example.notes.helpers.NotesDatabaseHelper;
+import com.example.notes.models.Note;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -55,11 +57,6 @@ public class NotesDatabaseAdapter {
         return notes;
     }
 
-    public long getCount(){
-        return DatabaseUtils.queryNumEntries(database, NotesDatabaseHelper.TABLE);
-    }
-
-
     public long insert(Note note) {
         ContentValues cv = getContentValues(note);
         return  database.insert(NotesDatabaseHelper.TABLE, null, cv);
@@ -81,7 +78,8 @@ public class NotesDatabaseAdapter {
         cv.put(NotesDatabaseHelper.COLUMN_TITLE, note.hasTitle() ? note.getTitle() : "");
         cv.put(NotesDatabaseHelper.COLUMN_BODY, note.getBody());
         cv.put(NotesDatabaseHelper.COLUMN_TAGS, note.getStringOfTags());
-        cv.put(NotesDatabaseHelper.COLUMN_DATE, new SimpleDateFormat("dd-MM-yyyy HH:mm:ss").format(new Date()));
+        cv.put(NotesDatabaseHelper.COLUMN_DATE,
+                new SimpleDateFormat("dd-MM-yyyy HH:mm:ss").format(new Date()));
         return cv;
     }
 }

@@ -1,4 +1,4 @@
-package com.example.notes;
+package com.example.notes.fragments;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -9,6 +9,13 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+
+import com.example.notes.R;
+import com.example.notes.activities.MainActivity;
+import com.example.notes.activities.NoteActivity;
+import com.example.notes.adapters.NoteAdapter;
+import com.example.notes.adapters.NotesDatabaseAdapter;
+import com.example.notes.models.Note;
 
 import java.util.ArrayList;
 import java.util.Comparator;

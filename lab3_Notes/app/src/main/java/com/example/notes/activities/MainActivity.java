@@ -1,4 +1,4 @@
-package com.example.notes;
+package com.example.notes.activities;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
@@ -12,6 +12,9 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.Spinner;
+
+import com.example.notes.models.Note;
+import com.example.notes.R;
 
 public class MainActivity extends AppCompatActivity {
 

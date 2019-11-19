@@ -1,4 +1,4 @@
-package com.example.notes;
+package com.example.notes.models;
 
 import android.icu.text.SimpleDateFormat;
 
@@ -8,7 +8,7 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
-class Note implements Serializable {
+public class Note implements Serializable {
 
     private long id;
     private String title;
@@ -16,7 +16,7 @@ class Note implements Serializable {
     private Date creatingDate;
     private List<String> tags;
 
-    Note(long id, String title, String body, String tags) {
+    public Note(long id, String title, String body, String tags) {
         this.id = id;
         this.title = title;
         this.body = body;
@@ -25,7 +25,7 @@ class Note implements Serializable {
         this.creatingDate = new Date();
     }
 
-    Note(long id, String title, String body, String tags, String date) {
+    public Note(long id, String title, String body, String tags, String date) {
         this(id, title, body, tags);
         try {
             this.creatingDate = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss").parse(date);
@@ -35,7 +35,7 @@ class Note implements Serializable {
         }
     }
 
-    Note() {
+    public Note() {
         this.id = 0;
         this.title = "";
         this.body = "";
@@ -43,43 +43,39 @@ class Note implements Serializable {
         this.creatingDate = new Date();
     }
 
-    long getId() {
+    public long getId() {
         return id;
     }
 
-    String getTitle() {
+    public String getTitle() {
         if (title.equals(""))
             return getStringOfDate();
         return title;
     }
 
-    private String getStringOfDate() {
-        return new SimpleDateFormat("dd-MM-yyyy HH:mm:ss").format(creatingDate);
-    }
-
-    String getBody() {
+    public String getBody() {
         return body;
     }
 
-    Date getDate() {
+    public Date getDate() {
         return creatingDate;
     }
 
-    List<String> getTags() {
-        return tags;
-    }
-
-    String getStringOfTags() {
+    public String getStringOfTags() {
         if (tags == null)
             return "";
         return String.join(" ", tags);
     }
 
-    boolean hasTitle() {
+    public boolean hasTitle() {
         return !title.equals("");
     }
 
-    boolean hasTag(String tag) {
+    public boolean hasTag(String tag) {
         return tags.contains(tag.toLowerCase());
+    }
+
+    private String getStringOfDate() {
+        return new SimpleDateFormat("dd-MM-yyyy HH:mm:ss").format(creatingDate);
     }
 }
