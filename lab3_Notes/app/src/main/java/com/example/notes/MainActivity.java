@@ -10,7 +10,6 @@ import android.text.TextWatcher;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
 
@@ -71,6 +70,13 @@ public class MainActivity extends AppCompatActivity {
                 findListener.onActivityFindListener(editable.toString());
             }
         });
+        tagFindEdit.clearFocus();
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        tagFindEdit.clearFocus();
     }
 
     public void addButtonClick(View view) {
