@@ -36,7 +36,7 @@ public class NoteAdapter extends ArrayAdapter<Note> {
     public View getView(int position, View convertView, @NonNull ViewGroup parent) {
         NoteViewHolderItem noteViewHolderItem;
 
-        if (convertView == null){
+        if (convertView == null) {
 
             convertView = inflater.inflate(layoutResourceId, parent, false);
 

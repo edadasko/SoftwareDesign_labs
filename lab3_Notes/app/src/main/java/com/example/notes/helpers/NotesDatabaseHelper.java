@@ -25,15 +25,16 @@ public class NotesDatabaseHelper extends SQLiteOpenHelper {
 
     @Override
     public void onCreate(SQLiteDatabase db) {
-
-        db.execSQL("CREATE TABLE " + TABLE + " (" + COLUMN_ID
-                + " INTEGER PRIMARY KEY AUTOINCREMENT," + COLUMN_TITLE
-                + " TEXT, " + COLUMN_BODY
-                + " TEXT, " + COLUMN_TAGS
-                + " TEXT, " + COLUMN_DATE + " TEXT);");
+        db.execSQL("CREATE TABLE " + TABLE + " ("
+                + COLUMN_ID  + " INTEGER PRIMARY KEY AUTOINCREMENT,"
+                + COLUMN_TITLE  + " TEXT, "
+                + COLUMN_BODY  + " TEXT, "
+                + COLUMN_TAGS  + " TEXT, "
+                + COLUMN_DATE + " TEXT);");
 
         init(db);
     }
+
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion,  int newVersion) {
         db.execSQL("DROP TABLE IF EXISTS " + TABLE);

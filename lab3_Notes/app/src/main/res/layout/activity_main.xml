@@ -66,8 +66,6 @@
                 android:name="com.example.notes.fragments.NoteListFragment"/>
 
         </LinearLayout>
-
-
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton

@@ -16,6 +16,7 @@ import com.example.notes.activities.NoteActivity;
 import com.example.notes.adapters.NoteAdapter;
 import com.example.notes.adapters.NotesDatabaseAdapter;
 import com.example.notes.models.Note;
+import com.example.notes.SortTypes;
 
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -27,7 +28,7 @@ public class NoteListFragment extends Fragment
     private List<Note> notes = new ArrayList<>();
     private AdapterView notesListView;
     private NoteAdapter noteAdapter;
-    private String sortType = "Date";
+    private SortTypes sortType = SortTypes.Date;
     private String tagForSearching = "";
 
     @Override
@@ -54,7 +55,7 @@ public class NoteListFragment extends Fragment
         dbAdapter.open();
 
         notes = dbAdapter.getNotes();
-        SortNotes();
+        sortNotes();
         if(!tagForSearching.equals(""))
             filterNotesByTag();
 
@@ -64,31 +65,10 @@ public class NoteListFragment extends Fragment
         dbAdapter.close();
     }
 
-    private void SortNotes() {
-        switch (sortType) {
-            case "Date":
-                notes.sort(new Comparator<Note>() {
-                    @Override
-                    public int compare(Note o1, Note o2) {
-                        return o2.getDate().compareTo(o1.getDate());
-                    }
-                });
-                break;
-            case "Title":
-                notes.sort(new Comparator<Note>() {
-                    @Override
-                    public int compare(Note o1, Note o2) {
-                        return o1.getTitle().toLowerCase().compareTo(o2.getTitle().toLowerCase());
-                    }
-                });
-                break;
-        }
-    }
-
     @Override
-    public void onActivitySortListener (String sortType) {
+    public void onActivitySortListener (SortTypes sortType) {
         this.sortType = sortType;
-        SortNotes();
+        sortNotes();
         noteAdapter.notifyDataSetChanged();
     }
 
@@ -105,9 +85,30 @@ public class NoteListFragment extends Fragment
             noteAdapter.notifyDataSetChanged();
     }
 
+    private void sortNotes() {
+        switch (sortType) {
+            case Date:
+                notes.sort(new Comparator<Note>() {
+                    @Override
+                    public int compare(Note o1, Note o2) {
+                        return o2.getDate().compareTo(o1.getDate());
+                    }
+                });
+                break;
+            case Title:
+                notes.sort(new Comparator<Note>() {
+                    @Override
+                    public int compare(Note o1, Note o2) {
+                        return o1.getTitle().toLowerCase().compareTo(o2.getTitle().toLowerCase());
+                    }
+                });
+                break;
+        }
+    }
+
     private void filterNotesByTag() {
         if (tagForSearching.equals("")) {
-            SortNotes();
+            sortNotes();
             return;
         }
         List<Note> filteredNotes = new ArrayList<>();
@@ -115,7 +116,7 @@ public class NoteListFragment extends Fragment
             if (note.hasTag(tagForSearching.toLowerCase()))
                 filteredNotes.add(note);
         }
-        SortNotes();
+        sortNotes();
         notes.clear();
         notes.addAll(filteredNotes);
     }

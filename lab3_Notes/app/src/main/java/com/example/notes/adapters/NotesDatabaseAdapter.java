@@ -42,8 +42,8 @@ public class NotesDatabaseAdapter {
     public List<Note> getNotes() {
         ArrayList<Note> notes = new ArrayList<>();
         Cursor cursor = getAllEntries();
-        if(cursor.moveToFirst()){
-            do{
+        if(cursor.moveToFirst()) {
+            do {
                 int id = cursor.getInt(cursor.getColumnIndex(NotesDatabaseHelper.COLUMN_ID));
                 String title = cursor.getString(cursor.getColumnIndex(NotesDatabaseHelper.COLUMN_TITLE));
                 String body = cursor.getString(cursor.getColumnIndex(NotesDatabaseHelper.COLUMN_BODY));
