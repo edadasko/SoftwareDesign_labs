@@ -56,11 +56,10 @@ public class PostAdapter extends ArrayAdapter<Post> {
         }
 
         Post post = posts.get(position);
-        if (post.Image == null) {
-            viewHolder.postThumbView.setImageResource(R.drawable.ic_photo_black_24dp);
-        }
-        else
-        {
+
+        viewHolder.postThumbView.setImageResource(R.drawable.ic_photo_black_24dp);
+
+        if (post.Image != null) {
             viewHolder.postThumbViewURL = post.Image;
             new DownloadImageTask().execute(viewHolder);
         }
@@ -89,10 +88,7 @@ public class PostAdapter extends ArrayAdapter<Post> {
 
         @Override
         protected void onPostExecute(ViewHolder result) {
-            // TODO Auto-generated method stub
-            if (result.bitmapImage == null) {
-                result.postThumbView.setImageResource(R.drawable.ic_photo_black_24dp);
-            } else {
+            if (result.bitmapImage != null) {
                 result.postThumbView.setImageBitmap(result.bitmapImage);
             }
         }

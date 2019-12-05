@@ -23,7 +23,6 @@
         android:layout_alignTop="@id/postThumb"
         android:layout_toRightOf="@id/postThumb"
         android:maxLines="2"
-        android:text="This is a good Post, I hope it will have 2 lines. Please give me 2 lines"
         android:textIsSelectable="false"
         android:textSize="16sp"
         android:ellipsize="end"/>
@@ -36,7 +35,5 @@
         android:layout_alignBottom="@id/postThumb"
         android:layout_toRightOf="@id/postThumb"
         android:maxLines="1"
-        android:text="April 12, 2013"
-        android:textSize="12sp"
-        />
+        android:textSize="12sp" />
 </RelativeLayout>
