@@ -40,6 +40,8 @@ public class MainActivity extends AppCompatActivity {
     private static String RSS = "";
     private boolean isMainLoad = false;
 
+    private ProgressDialog dialog;
+
     public static final String APP_PREFERENCES = "settings";
     public static final String APP_PREFERENCES_RSS = "rss";
     private SharedPreferences mSettings;
@@ -111,7 +113,6 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private class RssDataController extends AsyncTask<String, Integer, ArrayList<Post>>{
-        private ProgressDialog dialog;
 
         @Override
         protected void onPreExecute(){
@@ -238,6 +239,15 @@ public class MainActivity extends AppCompatActivity {
 
     public void settingsButtonClick(View view) {
         showRssRequest();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+
+        if((dialog != null) && dialog.isShowing() ){
+            dialog.dismiss();
+        }
     }
 
 }
