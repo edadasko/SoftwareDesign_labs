@@ -13,7 +13,9 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 import android.app.AlertDialog;
+import android.content.BroadcastReceiver;
 import android.content.DialogInterface;
+import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
@@ -33,7 +35,7 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 
 public class MainActivity extends AppCompatActivity {
-    private ArrayList<Post> postList;
+    private ArrayList<Post> postList = new ArrayList<>();
     private ListView listView;
     private PostAdapter postAdapter;
     private static String RSS = "";
@@ -42,6 +44,8 @@ public class MainActivity extends AppCompatActivity {
     public static final String APP_PREFERENCES = "settings";
     public static final String APP_PREFERENCES_RSS = "rss";
     private SharedPreferences mSettings;
+
+    private BroadcastReceiver networkReceiver;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,6 +59,9 @@ public class MainActivity extends AppCompatActivity {
         listView = this.findViewById(R.id.postListView);
 
         listView.setOnItemClickListener(onItemClickListener);
+
+        networkReceiver = new NetworkChangeReceiver();
+        registerReceiver(networkReceiver, new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION));
 
         if (!mSettings.contains(APP_PREFERENCES_RSS)) {
             showRssRequest();
@@ -90,7 +97,8 @@ public class MainActivity extends AppCompatActivity {
     };
 
     private void getRssData(){
-        if(haveInternet()){
+        if(NetworkUtil.getConnectivityStatus(this) != NetworkState.NOT_CONNECTED){
+            isMainLoad = true;
             new RssDataController().execute(RSS);
         }else{
             Toast.makeText(this, "You don't have internet connection.", Toast.LENGTH_LONG).show();
@@ -118,25 +126,23 @@ public class MainActivity extends AppCompatActivity {
 
         @Override
         protected ArrayList<Post> doInBackground(String... params) {
-            isMainLoad = true;
             return ProcessXml(Getdata(params[0]));
         }
 
         @Override
         protected void onPostExecute(ArrayList<Post> result) {
+            postList.clear();
             if (result.size() == 0) {
                 Toast.makeText(getApplicationContext(),
                         "The RSS link in wrong.", Toast.LENGTH_LONG).show();
             }
             else {
-                postList.clear();
                 postList.addAll(result);
             }
             postAdapter.notifyDataSetChanged();
 
             if(isMainLoad){
-                if(dialog != null)
-                    dialog.dismiss();
+                dialog.dismiss();
                 isMainLoad = false;
             }
         }
@@ -153,14 +159,12 @@ public class MainActivity extends AppCompatActivity {
                 return xmlDoc;
             } catch (Exception e) {
                 e.printStackTrace();
-                //postList.clear();
-                //postAdapter.notifyDataSetChanged();
                 return null;
             }
         }
 
         private ArrayList<Post> ProcessXml(Document data) {
-            ArrayList<Post> posts = new ArrayList<>();;
+            ArrayList<Post> posts = new ArrayList<>();
             if (data != null) {
                 Element root = data.getDocumentElement();
                 Node channel = root.getChildNodes().item(1);
@@ -194,17 +198,6 @@ public class MainActivity extends AppCompatActivity {
             }
             return posts;
         }
-    }
-
-    private boolean haveInternet(){
-        ConnectivityManager connManager = (ConnectivityManager)
-                getApplicationContext().getSystemService(Context.CONNECTIVITY_SERVICE);
-        NetworkInfo network = null;
-
-        if(connManager != null){
-            network = connManager.getActiveNetworkInfo();
-        }
-        return network != null && network.isConnected();
     }
 
     private void showRssRequest(){
@@ -247,4 +240,6 @@ public class MainActivity extends AppCompatActivity {
     public void settingsButtonClick(View view) {
         showRssRequest();
     }
+
 }
+
