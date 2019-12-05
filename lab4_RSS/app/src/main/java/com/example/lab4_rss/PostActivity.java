@@ -10,7 +10,6 @@ import android.webkit.WebView;
 public class PostActivity extends AppCompatActivity {
     private WebView webView;
     private Post post;
-    private boolean isMainLoad = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

@@ -11,15 +11,21 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
+
+import android.app.AlertDialog;
+import android.content.DialogInterface;
+import android.content.SharedPreferences;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.AdapterView;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
+import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.Toast;
 
@@ -31,22 +37,44 @@ public class MainActivity extends AppCompatActivity {
     private ListView listView;
     private PostAdapter postAdapter;
     private static String RSS = "";
-    private boolean isMainLoad = true;
+    private boolean isMainLoad = false;
+
+    public static final String APP_PREFERENCES = "settings";
+    public static final String APP_PREFERENCES_RSS = "rss";
+    private SharedPreferences mSettings;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        RSS = this.getString(R.string.rss);
+
+        mSettings = getSharedPreferences(APP_PREFERENCES, Context.MODE_PRIVATE);
+
         postList = new ArrayList<>();
 
         listView = this.findViewById(R.id.postListView);
 
         listView.setOnItemClickListener(onItemClickListener);
 
-        getRssData();
+        if (!mSettings.contains(APP_PREFERENCES_RSS)) {
+            showRssRequest();
+        }
+        else
+        {
+            RSS = mSettings.getString(APP_PREFERENCES_RSS, "");
+            getRssData();
+            updateAdapter();
+        }
+    }
 
-        updateAdapter();
+    @Override
+    protected void onPause() {
+        super.onPause();
+        if (!RSS.equals("")) {
+            SharedPreferences.Editor editor = mSettings.edit();
+            editor.putString(APP_PREFERENCES_RSS, RSS);
+            editor.apply();
+        }
     }
 
     private AdapterView.OnItemClickListener onItemClickListener = new AdapterView.OnItemClickListener() {
@@ -90,16 +118,25 @@ public class MainActivity extends AppCompatActivity {
 
         @Override
         protected ArrayList<Post> doInBackground(String... params) {
+            isMainLoad = true;
             return ProcessXml(Getdata(params[0]));
         }
 
         @Override
         protected void onPostExecute(ArrayList<Post> result) {
-            postList.addAll(result);
+            if (result.size() == 0) {
+                Toast.makeText(getApplicationContext(),
+                        "The RSS link in wrong.", Toast.LENGTH_LONG).show();
+            }
+            else {
+                postList.clear();
+                postList.addAll(result);
+            }
             postAdapter.notifyDataSetChanged();
 
             if(isMainLoad){
-                dialog.dismiss();
+                if(dialog != null)
+                    dialog.dismiss();
                 isMainLoad = false;
             }
         }
@@ -116,14 +153,15 @@ public class MainActivity extends AppCompatActivity {
                 return xmlDoc;
             } catch (Exception e) {
                 e.printStackTrace();
+                //postList.clear();
+                //postAdapter.notifyDataSetChanged();
                 return null;
             }
         }
 
         private ArrayList<Post> ProcessXml(Document data) {
-            ArrayList<Post> posts = null;
+            ArrayList<Post> posts = new ArrayList<>();;
             if (data != null) {
-                posts = new ArrayList<>();
                 Element root = data.getDocumentElement();
                 Node channel = root.getChildNodes().item(1);
                 if (channel == null)
@@ -167,5 +205,46 @@ public class MainActivity extends AppCompatActivity {
             network = connManager.getActiveNetworkInfo();
         }
         return network != null && network.isConnected();
+    }
+
+    private void showRssRequest(){
+        LayoutInflater li = LayoutInflater.from(this);
+        View promptsView = li.inflate(R.layout.rss_link, null);
+
+        AlertDialog.Builder mDialogBuilder = new AlertDialog.Builder(this);
+
+        mDialogBuilder.setView(promptsView);
+
+        final EditText userInput = promptsView.findViewById(R.id.input_rss);
+
+        userInput.setText(RSS);
+        mDialogBuilder
+                .setCancelable(false)
+                .setPositiveButton("OK",
+                        new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog,int id) {
+                                SharedPreferences.Editor editor = mSettings.edit();
+                                editor.putString(APP_PREFERENCES_RSS, userInput.getText().toString());
+                                editor.apply();
+
+                                RSS = mSettings.getString(APP_PREFERENCES_RSS, "");
+                                getRssData();
+                                updateAdapter();
+                            }
+                        })
+                .setNegativeButton("Cancel",
+                        new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog,int id) {
+                                dialog.cancel();
+                            }
+                        });
+
+        AlertDialog alertDialog = mDialogBuilder.create();
+
+        alertDialog.show();
+    }
+
+    public void settingsButtonClick(View view) {
+        showRssRequest();
     }
 }

@@ -1,4 +1,5 @@
 <resources>
     <string name="app_name">lab4_RSS</string>
+    <string name="enter_rss">Enter rss link:</string>
     <string name="rss">https://www.popmech.ru/out/public-all.xml</string>
 </resources>
