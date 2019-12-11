@@ -80,7 +80,7 @@ public class PostAdapter extends ArrayAdapter<Post> {
                 viewHolder.bitmapImage = BitmapFactory.decodeStream(imageURL.openStream());
             } catch (IOException e) {
                 Log.e("error", "Downloading Image Failed");
-                viewHolder.postThumbView = null;
+                viewHolder.bitmapImage = null;
             }
 
             return viewHolder;
@@ -90,6 +90,9 @@ public class PostAdapter extends ArrayAdapter<Post> {
         protected void onPostExecute(ViewHolder result) {
             if (result.bitmapImage != null) {
                 result.postThumbView.setImageBitmap(result.bitmapImage);
+            }
+            else {
+                result.postThumbView.setImageResource(R.drawable.ic_photo_black_24dp);
             }
         }
     }

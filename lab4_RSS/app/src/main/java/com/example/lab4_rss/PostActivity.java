@@ -27,13 +27,13 @@ public class PostActivity extends AppCompatActivity {
 
         progressBar = findViewById(R.id.progressBar);
         showPost();
-
     }
 
     private void showPost(){
         WebSettings webSett = webView.getSettings();
         webSett.setDefaultTextEncodingName("UTF-8");
         webSett.setBuiltInZoomControls(true);
+        webSett.setCacheMode(WebSettings.LOAD_DEFAULT);
         webView.setWebViewClient(new WebViewClient(){
             @Override
             public void onPageStarted(WebView view, String url, Bitmap favicon) {

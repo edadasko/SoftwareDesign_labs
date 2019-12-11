@@ -19,17 +19,21 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 
 public class RssDataController extends AsyncTask<String, Integer, ArrayList<Post>> {
+
+    private int cashedNum = 10;
     private ProgressDialog dialog;
     private Context context;
     ArrayList<Post> postList;
+    ArrayList<Post> cashedPosts;
     PostAdapter adapter;
 
 
-    public RssDataController(Context context, ArrayList<Post> postList, PostAdapter adapter, ProgressDialog dialog) {
+    public RssDataController(Context context, ArrayList<Post> postList, PostAdapter adapter, ProgressDialog dialog, ArrayList<Post> cashedPosts) {
         this.context = context;
         this.postList = postList;
         this.adapter = adapter;
         this.dialog = dialog;
+        this.cashedPosts = cashedPosts;
     }
     @Override
     protected void onPreExecute(){
@@ -52,6 +56,8 @@ public class RssDataController extends AsyncTask<String, Integer, ArrayList<Post
         }
         else {
             postList.addAll(result);
+            cashedPosts.clear();
+            cashedPosts.addAll(result.subList(0, cashedNum));
         }
         adapter.notifyDataSetChanged();
 
