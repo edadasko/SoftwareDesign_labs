@@ -22,7 +22,7 @@ public class PostAdapter extends ArrayAdapter<Post> {
     private ArrayList<Post> posts;
 
     public PostAdapter(Context context, int textViewResourceId,
-                       ArrayList<Post> objects, boolean isOnline) {
+                       ArrayList<Post> objects) {
         super(context, textViewResourceId, objects);
         myContext = (Activity) context;
         posts = objects;

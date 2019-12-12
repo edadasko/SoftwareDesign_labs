@@ -4,7 +4,6 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import java.util.ArrayList;
 
-
 import android.app.AlertDialog;
 import android.content.BroadcastReceiver;
 import android.content.DialogInterface;
@@ -21,8 +20,6 @@ import android.content.Intent;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.Toast;
-
-import com.google.gson.Gson;
 
 public class MainActivity extends AppCompatActivity {
     private ArrayList<Post> postList = new ArrayList<>();
@@ -48,7 +45,7 @@ public class MainActivity extends AppCompatActivity {
         mSettings = getSharedPreferences(APP_PREFERENCES, Context.MODE_PRIVATE);
 
         dialog = new ProgressDialog(this);
-        updateAdapter(true);
+        updateAdapter();
 
         listView.setOnItemClickListener(onItemClickListener);
 
@@ -94,8 +91,8 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    private void updateAdapter(boolean isOnline) {
-        postAdapter = new PostAdapter(this, R.layout.post, postList, isOnline);
+    private void updateAdapter() {
+        postAdapter = new PostAdapter(this, R.layout.post, postList);
         listView = this.findViewById(R.id.postListView);
         listView.setAdapter(postAdapter);
     }
@@ -105,7 +102,8 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void setOnlineMode() {
-        new RssDataController(this, postList, postAdapter, dialog, mSettings, true).execute(RSS);
+        if (!RSS.isEmpty())
+            new RssDataController(this, postList, postAdapter, dialog, mSettings, true).execute(RSS);
     }
 
     private void showRssRequest(){

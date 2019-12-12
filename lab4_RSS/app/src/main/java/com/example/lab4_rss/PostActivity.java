@@ -33,7 +33,7 @@ public class PostActivity extends AppCompatActivity {
         WebSettings webSett = webView.getSettings();
         webSett.setDefaultTextEncodingName("UTF-8");
         webSett.setBuiltInZoomControls(true);
-        webSett.setCacheMode(WebSettings.LOAD_DEFAULT);
+        webSett.setCacheMode( WebSettings.LOAD_CACHE_ELSE_NETWORK);
         webView.setWebViewClient(new WebViewClient(){
             @Override
             public void onPageStarted(WebView view, String url, Bitmap favicon) {

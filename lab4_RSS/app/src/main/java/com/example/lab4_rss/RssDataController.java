@@ -77,6 +77,7 @@ public class RssDataController extends AsyncTask<String, Integer, ArrayList<Post
         if (result.size() == 0) {
             Toast.makeText(context,
                     "The RSS link in wrong.", Toast.LENGTH_LONG).show();
+            dialog.dismiss();
         }
         else {
             postList.addAll(result);
@@ -150,8 +151,10 @@ public class RssDataController extends AsyncTask<String, Integer, ArrayList<Post
         }
 
         for (Post p : cashedPosts) {
-            byte[] b = Base64.decode(p.cachedBitmap , Base64.DEFAULT);
-            p.bitmapImage = BitmapFactory.decodeByteArray(b, 0, b.length);
+            if (p.cachedBitmap != null) {
+                byte[] b = Base64.decode(p.cachedBitmap, Base64.DEFAULT);
+                p.bitmapImage = BitmapFactory.decodeByteArray(b, 0, b.length);
+            }
         }
 
         return cashedPosts;
@@ -175,13 +178,17 @@ public class RssDataController extends AsyncTask<String, Integer, ArrayList<Post
             }
             for (int i = 0; i < cashedNum; i++) {
                 try {
-                    URL imageURL = new URL(cachedPosts.get(i).Image);
-                    Bitmap image = BitmapFactory.decodeStream(imageURL.openStream());
-                    ByteArrayOutputStream baos = new ByteArrayOutputStream();
-                    image.compress(Bitmap.CompressFormat.JPEG, 10, baos);
-                    byte[] b = baos.toByteArray();
-                    String encodedImage = Base64.encodeToString(b, Base64.DEFAULT);
-                    cachedPosts.get(i).cachedBitmap = encodedImage;
+                    if (cachedPosts.get(i).Image != null) {
+                        URL imageURL = new URL(cachedPosts.get(i).Image);
+                        Bitmap image = BitmapFactory.decodeStream(imageURL.openStream());
+                        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+                        image.compress(Bitmap.CompressFormat.JPEG, 10, baos);
+                        byte[] b = baos.toByteArray();
+                        String encodedImage = Base64.encodeToString(b, Base64.DEFAULT);
+                        cachedPosts.get(i).cachedBitmap = encodedImage;
+                    }
+                    else
+                        cachedPosts.get(i).cachedBitmap = null;
                 } catch (IOException e) {
                     Log.e("error", "Downloading Image Failed");
                     cachedPosts.get(i).cachedBitmap = null;
