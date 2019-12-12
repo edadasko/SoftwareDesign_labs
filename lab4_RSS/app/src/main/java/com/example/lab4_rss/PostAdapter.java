@@ -22,7 +22,7 @@ public class PostAdapter extends ArrayAdapter<Post> {
     private ArrayList<Post> posts;
 
     public PostAdapter(Context context, int textViewResourceId,
-                       ArrayList<Post> objects) {
+                       ArrayList<Post> objects, boolean isOnline) {
         super(context, textViewResourceId, objects);
         myContext = (Activity) context;
         posts = objects;
@@ -59,11 +59,13 @@ public class PostAdapter extends ArrayAdapter<Post> {
 
         viewHolder.postThumbView.setImageResource(R.drawable.ic_photo_black_24dp);
 
-        if (post.Image != null) {
+        if (post.bitmapImage != null) {
+            viewHolder.postThumbView.setImageBitmap(post.bitmapImage);
+        }
+        else {
             viewHolder.postThumbViewURL = post.Image;
             new DownloadImageTask().execute(viewHolder);
         }
-
         viewHolder.postTitleView.setText(post.Title);
         viewHolder.postDateView.setText(post.Date);
 
@@ -71,7 +73,6 @@ public class PostAdapter extends ArrayAdapter<Post> {
     }
 
     private class DownloadImageTask extends AsyncTask<ViewHolder, Void, ViewHolder> {
-
         @Override
         protected ViewHolder doInBackground(ViewHolder... params) {
             ViewHolder viewHolder = params[0];
@@ -90,9 +91,6 @@ public class PostAdapter extends ArrayAdapter<Post> {
         protected void onPostExecute(ViewHolder result) {
             if (result.bitmapImage != null) {
                 result.postThumbView.setImageBitmap(result.bitmapImage);
-            }
-            else {
-                result.postThumbView.setImageResource(R.drawable.ic_photo_black_24dp);
             }
         }
     }

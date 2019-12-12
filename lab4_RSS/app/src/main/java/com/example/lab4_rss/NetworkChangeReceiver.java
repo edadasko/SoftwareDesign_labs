@@ -11,10 +11,10 @@ public class NetworkChangeReceiver extends BroadcastReceiver {
     public void onReceive(final Context context, final Intent intent) {
 
         String status = NetworkUtil.getConnectivityStatusString(context);
-
+        NetworkState state = NetworkUtil.getConnectivityStatus(context);
         Toast.makeText(context, status, Toast.LENGTH_LONG).show();
 
-        if (status.equals("Not connected to Internet"))
+        if (state == NetworkState.NOT_CONNECTED)
             ((MainActivity) context).setOfflineMode();
         else
             ((MainActivity) context).setOnlineMode();

@@ -2,15 +2,26 @@ package com.example.lab4_rss;
 
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.SharedPreferences;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
+import android.util.Base64;
+import android.util.Log;
 import android.widget.Toast;
+
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.io.InputStream;
+import java.lang.reflect.Type;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
@@ -18,33 +29,46 @@ import java.util.ArrayList;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 
+import static com.example.lab4_rss.MainActivity.APP_PREFERENCES_CACHE;
+
 public class RssDataController extends AsyncTask<String, Integer, ArrayList<Post>> {
 
     private int cashedNum = 10;
     private ProgressDialog dialog;
     private Context context;
     ArrayList<Post> postList;
-    ArrayList<Post> cashedPosts;
     PostAdapter adapter;
+    SharedPreferences mSettings;
+    boolean online;
 
 
-    public RssDataController(Context context, ArrayList<Post> postList, PostAdapter adapter, ProgressDialog dialog, ArrayList<Post> cashedPosts) {
+    public RssDataController(
+            Context context,
+            ArrayList<Post> postList,
+            PostAdapter adapter,
+            ProgressDialog dialog,
+            SharedPreferences mSettings,
+            boolean online) {
         this.context = context;
         this.postList = postList;
         this.adapter = adapter;
         this.dialog = dialog;
-        this.cashedPosts = cashedPosts;
+        this.mSettings = mSettings;
+        this.online = online;
     }
     @Override
     protected void onPreExecute(){
         dialog.setMessage("Loading news...");
         dialog.setCancelable(false);
         dialog.show();
-        }
+    }
 
     @Override
     protected ArrayList<Post> doInBackground(String... params) {
-        return ProcessXml(GetData(params[0]));
+        if (online)
+            return ProcessXml(GetData(params[0]));
+        else
+            return GetCache();
     }
 
     @Override
@@ -56,12 +80,11 @@ public class RssDataController extends AsyncTask<String, Integer, ArrayList<Post
         }
         else {
             postList.addAll(result);
-            cashedPosts.clear();
-            cashedPosts.addAll(result.subList(0, cashedNum));
+            dialog.dismiss();
+            if (online)
+                new DownloadBitmaps().execute(postList);
         }
         adapter.notifyDataSetChanged();
-
-        dialog.dismiss();
     }
 
     private Document GetData(String address) {
@@ -113,5 +136,69 @@ public class RssDataController extends AsyncTask<String, Integer, ArrayList<Post
             }
         }
         return posts;
+    }
+
+    private ArrayList<Post> GetCache() {
+        ArrayList<Post> cashedPosts = new ArrayList<>();
+        Type type = new TypeToken<ArrayList<Post>>(){}.getType();
+
+        String cashedPostsString = mSettings.getString(APP_PREFERENCES_CACHE, "");
+
+        Gson gson = new Gson();
+        if (!cashedPostsString.isEmpty()) {
+            cashedPosts = gson.fromJson(cashedPostsString, type);
+        }
+
+        for (Post p : cashedPosts) {
+            byte[] b = Base64.decode(p.cachedBitmap , Base64.DEFAULT);
+            p.bitmapImage = BitmapFactory.decodeByteArray(b, 0, b.length);
+        }
+
+        return cashedPosts;
+    }
+
+    private class DownloadBitmaps extends AsyncTask<ArrayList<Post>, Void, ArrayList<Post>> {
+
+        @Override
+        protected void onPreExecute(){
+            dialog.setMessage("Saving news...");
+            dialog.setCancelable(false);
+            dialog.show();
+        }
+
+        @Override
+        protected ArrayList<Post> doInBackground(ArrayList<Post>... params) {
+            ArrayList<Post> posts = params[0];
+            ArrayList<Post> cachedPosts = new ArrayList<>();
+            for (int i = 0; i < cashedNum; i++) {
+                cachedPosts.add(new Post(posts.get(i)));
+            }
+            for (int i = 0; i < cashedNum; i++) {
+                try {
+                    URL imageURL = new URL(cachedPosts.get(i).Image);
+                    Bitmap image = BitmapFactory.decodeStream(imageURL.openStream());
+                    ByteArrayOutputStream baos = new ByteArrayOutputStream();
+                    image.compress(Bitmap.CompressFormat.JPEG, 10, baos);
+                    byte[] b = baos.toByteArray();
+                    String encodedImage = Base64.encodeToString(b, Base64.DEFAULT);
+                    cachedPosts.get(i).cachedBitmap = encodedImage;
+                } catch (IOException e) {
+                    Log.e("error", "Downloading Image Failed");
+                    cachedPosts.get(i).cachedBitmap = null;
+                }
+            }
+            return cachedPosts;
+        }
+
+        @Override
+        protected void onPostExecute(ArrayList<Post> result) {
+            SharedPreferences.Editor editor = mSettings.edit();
+
+            Gson gson = new Gson();
+            String jsonCache = gson.toJson(result);
+            editor.putString(APP_PREFERENCES_CACHE, jsonCache);
+            editor.apply();
+            dialog.dismiss();
+        }
     }
 }

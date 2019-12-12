@@ -2,7 +2,6 @@ package com.example.lab4_rss;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import java.lang.reflect.Type;
 import java.util.ArrayList;
 
 
@@ -24,13 +23,9 @@ import android.widget.ListView;
 import android.widget.Toast;
 
 import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
 
 public class MainActivity extends AppCompatActivity {
     private ArrayList<Post> postList = new ArrayList<>();
-    private ArrayList<Post> cashedPosts = new ArrayList<>();
-
-    private Gson gson = new Gson();
 
     private ListView listView;
     private PostAdapter postAdapter;
@@ -52,15 +47,8 @@ public class MainActivity extends AppCompatActivity {
 
         mSettings = getSharedPreferences(APP_PREFERENCES, Context.MODE_PRIVATE);
 
-        Type type = new TypeToken<ArrayList<Post>>(){}.getType();
-
-        String cashedPostsString = mSettings.getString(APP_PREFERENCES_CACHE, "");
-
-        if (!cashedPostsString.isEmpty())
-            cashedPosts = gson.fromJson(cashedPostsString, type);
-
         dialog = new ProgressDialog(this);
-        updateAdapter();
+        updateAdapter(true);
 
         listView.setOnItemClickListener(onItemClickListener);
 
@@ -74,8 +62,6 @@ public class MainActivity extends AppCompatActivity {
             RSS = mSettings.getString(APP_PREFERENCES_RSS, "");
             getRssData();
         }
-
-        setOfflineMode();
     }
 
     @Override
@@ -85,10 +71,6 @@ public class MainActivity extends AppCompatActivity {
         if (!RSS.equals("")) {
             editor.putString(APP_PREFERENCES_RSS, RSS);
         }
-
-        String jsonCache = gson.toJson(cashedPosts);
-        editor.putString(APP_PREFERENCES_CACHE, jsonCache);
-        editor.apply();
     }
 
     private AdapterView.OnItemClickListener onItemClickListener = new AdapterView.OnItemClickListener() {
@@ -104,27 +86,26 @@ public class MainActivity extends AppCompatActivity {
     };
 
     private void getRssData(){
-        if(NetworkUtil.getConnectivityStatus(this) != NetworkState.NOT_CONNECTED){
-            new RssDataController(this, postList, postAdapter, dialog, cashedPosts).execute(RSS);
-        }else{
+        if (NetworkUtil.getConnectivityStatus(this) != NetworkState.NOT_CONNECTED){
+            setOnlineMode();
+        } else {
             Toast.makeText(this, "You don't have internet connection.", Toast.LENGTH_LONG).show();
+            setOfflineMode();
         }
     }
 
-    private void updateAdapter() {
-        postAdapter = new PostAdapter(this, R.layout.post, postList);
+    private void updateAdapter(boolean isOnline) {
+        postAdapter = new PostAdapter(this, R.layout.post, postList, isOnline);
         listView = this.findViewById(R.id.postListView);
         listView.setAdapter(postAdapter);
     }
 
     public void setOfflineMode() {
-        postList.clear();
-        postList.addAll(cashedPosts);
-        updateAdapter();
+        new RssDataController(this, postList, postAdapter, dialog, mSettings, false).execute(RSS);
     }
 
     public void setOnlineMode() {
-        getRssData();
+        new RssDataController(this, postList, postAdapter, dialog, mSettings, true).execute(RSS);
     }
 
     private void showRssRequest(){

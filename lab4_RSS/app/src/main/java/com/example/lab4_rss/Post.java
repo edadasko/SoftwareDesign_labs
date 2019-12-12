@@ -1,5 +1,6 @@
 package com.example.lab4_rss;
 
+import android.graphics.Bitmap;
 import android.os.Parcel;
 import android.os.Parcelable;
 
@@ -9,6 +10,9 @@ public class Post implements Parcelable {
     public String Date;
     public String Image;
     public String Link;
+
+    public String cachedBitmap;
+    public Bitmap bitmapImage;
 
     public Post() {
         super();
@@ -25,6 +29,14 @@ public class Post implements Parcelable {
     public Post(String _title, String _pubDate) {
         this.Title = _title;
         this.Date = _pubDate;
+    }
+
+    public Post(Post other) {
+        Title = other.Title;
+        Content = other.Content;
+        Date = other.Date;
+        Image = other.Image;
+        Link = other.Link;
     }
 
     @Override
