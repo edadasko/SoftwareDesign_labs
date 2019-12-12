@@ -32,7 +32,6 @@ public class MainActivity extends AppCompatActivity {
 
     public static final String APP_PREFERENCES = "settings";
     public static final String APP_PREFERENCES_RSS = "rss";
-    public static final String APP_PREFERENCES_CACHE = "cache";
     private SharedPreferences mSettings;
 
     private BroadcastReceiver networkReceiver;
@@ -78,6 +77,7 @@ public class MainActivity extends AppCompatActivity {
 
             Intent i = new Intent(MainActivity.this, PostActivity.class);
             i.putExtra("post", post);
+            i.putExtra("position", postList.indexOf(post));
             startActivity(i);
         }
     };

@@ -6,9 +6,16 @@ import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
+import android.os.Environment;
+import android.text.Html;
 import android.util.Base64;
 import android.util.Log;
+import android.view.View;
+import android.webkit.WebSettings;
+import android.webkit.WebView;
+import android.webkit.WebViewClient;
 import android.widget.Toast;
+import androidx.core.text.HtmlCompat;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
@@ -18,9 +25,12 @@ import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
+import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.lang.reflect.Type;
 import java.net.HttpURLConnection;
 import java.net.URL;
@@ -29,24 +39,27 @@ import java.util.ArrayList;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 
-import static com.example.lab4_rss.MainActivity.APP_PREFERENCES_CACHE;
 
 public class RssDataController extends AsyncTask<String, Integer, ArrayList<Post>> {
 
+    private String APP_PREFERENCES_CACHE = "cache";
+
     private int cashedNum = 10;
-    private ProgressDialog dialog;
+    final private ProgressDialog dialog;
     private Context context;
     ArrayList<Post> postList;
     PostAdapter adapter;
     SharedPreferences mSettings;
+    ArrayList<WebView> webViews;
     boolean online;
+    String filesDir;
 
 
     public RssDataController(
             Context context,
             ArrayList<Post> postList,
             PostAdapter adapter,
-            ProgressDialog dialog,
+            final ProgressDialog dialog,
             SharedPreferences mSettings,
             boolean online) {
         this.context = context;
@@ -55,6 +68,22 @@ public class RssDataController extends AsyncTask<String, Integer, ArrayList<Post
         this.dialog = dialog;
         this.mSettings = mSettings;
         this.online = online;
+        filesDir = context.getFilesDir().getAbsolutePath();
+        webViews = new ArrayList<>();
+
+        for (int i = 0; i < cashedNum; i++) {
+            webViews.add(new WebView(context));
+            webViews.get(i).setWebViewClient(new WebViewClient(){
+
+                @Override
+                public void onPageFinished(WebView view, String url) {
+                    int index = webViews.indexOf(view);
+                    view.saveWebArchive(filesDir + File.separator + webViews.indexOf(view) + ".mht");
+                    if (index == cashedNum - 1)
+                        dialog.dismiss();
+                }
+            });
+        }
     }
     @Override
     protected void onPreExecute(){
@@ -84,6 +113,7 @@ public class RssDataController extends AsyncTask<String, Integer, ArrayList<Post
             dialog.dismiss();
             if (online)
                 new DownloadBitmaps().execute(postList);
+
         }
         adapter.notifyDataSetChanged();
     }
@@ -106,6 +136,7 @@ public class RssDataController extends AsyncTask<String, Integer, ArrayList<Post
 
     private ArrayList<Post> ProcessXml(Document data) {
         ArrayList<Post> posts = new ArrayList<>();
+
         if (data != null) {
             Element root = data.getDocumentElement();
             Node channel = root.getChildNodes().item(1);
@@ -164,7 +195,7 @@ public class RssDataController extends AsyncTask<String, Integer, ArrayList<Post
 
         @Override
         protected void onPreExecute(){
-            dialog.setMessage("Saving news...");
+            dialog.setMessage("Caching news...");
             dialog.setCancelable(false);
             dialog.show();
         }
@@ -200,12 +231,14 @@ public class RssDataController extends AsyncTask<String, Integer, ArrayList<Post
         @Override
         protected void onPostExecute(ArrayList<Post> result) {
             SharedPreferences.Editor editor = mSettings.edit();
-
             Gson gson = new Gson();
             String jsonCache = gson.toJson(result);
             editor.putString(APP_PREFERENCES_CACHE, jsonCache);
             editor.apply();
-            dialog.dismiss();
+
+            for (int i = 0; i < cashedNum; i++) {
+                webViews.get(i).loadUrl(result.get(i).Link);
+            }
         }
     }
 }
