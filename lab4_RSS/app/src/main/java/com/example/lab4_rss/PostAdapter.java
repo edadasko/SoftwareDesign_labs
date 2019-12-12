@@ -5,7 +5,7 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
-import android.util.Log;
+import android.util.Base64;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -31,9 +31,11 @@ public class PostAdapter extends ArrayAdapter<Post> {
     static class ViewHolder {
         TextView postTitleView;
         TextView postDateView;
-        ImageView postThumbView;
-        String postThumbViewURL;
+        ImageView postImageView;
+
+        String postImageURL;
         Bitmap bitmapImage;
+        String cachedBitmap;
     }
 
     public View getView(int position, View convertView, ViewGroup parent) {
@@ -44,7 +46,7 @@ public class PostAdapter extends ArrayAdapter<Post> {
             convertView = inflater.inflate(R.layout.post, null);
 
             viewHolder = new ViewHolder();
-            viewHolder.postThumbView = convertView
+            viewHolder.postImageView = convertView
                     .findViewById(R.id.postThumb);
             viewHolder.postTitleView = convertView
                     .findViewById(R.id.postTitleLabel);
@@ -57,17 +59,18 @@ public class PostAdapter extends ArrayAdapter<Post> {
 
         Post post = posts.get(position);
 
-        viewHolder.postThumbView.setImageResource(R.drawable.ic_photo_black_24dp);
+        viewHolder.postImageView.setImageResource(R.drawable.ic_photo_black_24dp);
 
-        if (post.bitmapImage != null) {
-            viewHolder.postThumbView.setImageBitmap(post.bitmapImage);
+        if (post.cachedBitmap != null) {
+            viewHolder.cachedBitmap = post.cachedBitmap;
         }
         else {
-            viewHolder.postThumbViewURL = post.Image;
-            new DownloadImageTask().execute(viewHolder);
+            viewHolder.postImageURL = post.Image;
         }
+
+        new DownloadImageTask().execute(viewHolder);
         viewHolder.postTitleView.setText(post.Title);
-        viewHolder.postDateView.setText(post.Date);
+        viewHolder.postDateView.setText(post.Date.substring(0, 25));
 
         return convertView;
     }
@@ -76,21 +79,24 @@ public class PostAdapter extends ArrayAdapter<Post> {
         @Override
         protected ViewHolder doInBackground(ViewHolder... params) {
             ViewHolder viewHolder = params[0];
-            try {
-                URL imageURL = new URL(viewHolder.postThumbViewURL);
-                viewHolder.bitmapImage = BitmapFactory.decodeStream(imageURL.openStream());
-            } catch (IOException e) {
-                Log.e("error", "Downloading Image Failed");
-                viewHolder.bitmapImage = null;
+            if (viewHolder.cachedBitmap != null) {
+                byte[] b = Base64.decode(viewHolder.cachedBitmap, Base64.DEFAULT);
+                viewHolder.bitmapImage = BitmapFactory.decodeByteArray(b, 0, b.length);
+            } else {
+                try {
+                    URL imageURL = new URL(viewHolder.postImageURL);
+                    viewHolder.bitmapImage = BitmapFactory.decodeStream(imageURL.openStream());
+                } catch (IOException e) {
+                    viewHolder.bitmapImage = null;
+                }
             }
-
             return viewHolder;
         }
 
         @Override
         protected void onPostExecute(ViewHolder result) {
             if (result.bitmapImage != null) {
-                result.postThumbView.setImageBitmap(result.bitmapImage);
+                result.postImageView.setImageBitmap(result.bitmapImage);
             }
         }
     }

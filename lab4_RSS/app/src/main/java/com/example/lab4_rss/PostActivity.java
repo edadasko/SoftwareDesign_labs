@@ -4,7 +4,6 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.graphics.Bitmap;
 import android.os.Bundle;
-import android.os.Environment;
 import android.view.View;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
@@ -16,15 +15,16 @@ import java.io.File;
 
 public class PostActivity extends AppCompatActivity {
     private WebView webView;
-    private Post post;
+    private String postLink;
     private ProgressBar progressBar;
     private int postIndex;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_post);
 
-        post = getIntent().getParcelableExtra("post");
+        postLink = getIntent().getStringExtra("link");
         postIndex = getIntent().getIntExtra("position", 0);
         webView = findViewById(R.id.webview);
 
@@ -58,7 +58,7 @@ public class PostActivity extends AppCompatActivity {
             webView.loadUrl("file://" + getFilesDir().getAbsolutePath() + File.separator + postIndex + ".mht");
         }
         else {
-            webView.loadUrl(post.Link);
+            webView.loadUrl(postLink);
         }
 
     }

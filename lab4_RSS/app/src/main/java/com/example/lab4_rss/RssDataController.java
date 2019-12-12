@@ -6,16 +6,10 @@ import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
-import android.os.Environment;
-import android.text.Html;
 import android.util.Base64;
-import android.util.Log;
-import android.view.View;
-import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.Toast;
-import androidx.core.text.HtmlCompat;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
@@ -25,12 +19,10 @@ import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
-import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.lang.reflect.Type;
 import java.net.HttpURLConnection;
 import java.net.URL;
@@ -47,12 +39,12 @@ public class RssDataController extends AsyncTask<String, Integer, ArrayList<Post
     private int cashedNum = 10;
     final private ProgressDialog dialog;
     private Context context;
-    ArrayList<Post> postList;
-    PostAdapter adapter;
-    SharedPreferences mSettings;
-    ArrayList<WebView> webViews;
-    boolean online;
-    String filesDir;
+    private ArrayList<Post> postList;
+    private PostAdapter adapter;
+    private SharedPreferences mSettings;
+    private ArrayList<WebView> webViews;
+    private boolean online;
+    private String filesDir;
 
 
     public RssDataController(
@@ -85,6 +77,7 @@ public class RssDataController extends AsyncTask<String, Integer, ArrayList<Post
             });
         }
     }
+
     @Override
     protected void onPreExecute(){
         dialog.setMessage("Loading news...");
@@ -93,29 +86,32 @@ public class RssDataController extends AsyncTask<String, Integer, ArrayList<Post
     }
 
     @Override
-    protected ArrayList<Post> doInBackground(String... params) {
-        if (online)
-            return ProcessXml(GetData(params[0]));
-        else
-            return GetCache();
-    }
-
-    @Override
     protected void onPostExecute(ArrayList<Post> result) {
         postList.clear();
         if (result.size() == 0) {
-            Toast.makeText(context,
-                    "The RSS link in wrong.", Toast.LENGTH_LONG).show();
+            if (online) {
+                Toast.makeText(context,
+                        "The RSS link in wrong.", Toast.LENGTH_LONG).show();
+            }
             dialog.dismiss();
         }
         else {
             postList.addAll(result);
             dialog.dismiss();
-            if (online)
-                new DownloadBitmaps().execute(postList);
+            if (online) {
+                new CachePosts().execute(postList);
+            }
 
         }
         adapter.notifyDataSetChanged();
+    }
+
+    @Override
+    protected ArrayList<Post> doInBackground(String... params) {
+        if (online)
+            return ProcessXml(GetData(params[0]));
+        else
+            return GetCache();
     }
 
     private Document GetData(String address) {
@@ -181,17 +177,10 @@ public class RssDataController extends AsyncTask<String, Integer, ArrayList<Post
             cashedPosts = gson.fromJson(cashedPostsString, type);
         }
 
-        for (Post p : cashedPosts) {
-            if (p.cachedBitmap != null) {
-                byte[] b = Base64.decode(p.cachedBitmap, Base64.DEFAULT);
-                p.bitmapImage = BitmapFactory.decodeByteArray(b, 0, b.length);
-            }
-        }
-
         return cashedPosts;
     }
 
-    private class DownloadBitmaps extends AsyncTask<ArrayList<Post>, Void, ArrayList<Post>> {
+    private class CachePosts extends AsyncTask<ArrayList<Post>, Void, ArrayList<Post>> {
 
         @Override
         protected void onPreExecute(){
@@ -221,7 +210,6 @@ public class RssDataController extends AsyncTask<String, Integer, ArrayList<Post
                     else
                         cachedPosts.get(i).cachedBitmap = null;
                 } catch (IOException e) {
-                    Log.e("error", "Downloading Image Failed");
                     cachedPosts.get(i).cachedBitmap = null;
                 }
             }

@@ -19,7 +19,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.widget.EditText;
 import android.widget.ListView;
-import android.widget.Toast;
 
 public class MainActivity extends AppCompatActivity {
     private ArrayList<Post> postList = new ArrayList<>();
@@ -34,8 +33,6 @@ public class MainActivity extends AppCompatActivity {
     public static final String APP_PREFERENCES_RSS = "rss";
     private SharedPreferences mSettings;
 
-    private BroadcastReceiver networkReceiver;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -48,16 +45,12 @@ public class MainActivity extends AppCompatActivity {
 
         listView.setOnItemClickListener(onItemClickListener);
 
+        BroadcastReceiver networkReceiver;
         networkReceiver = new NetworkChangeReceiver();
         registerReceiver(networkReceiver, new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION));
 
-        if (!mSettings.contains(APP_PREFERENCES_RSS)) {
-            showRssRequest();
-        }
-        else {
-            RSS = mSettings.getString(APP_PREFERENCES_RSS, "");
-            getRssData();
-        }
+        RSS = mSettings.getString(APP_PREFERENCES_RSS, "");
+        getRssData();
     }
 
     @Override
@@ -76,26 +69,11 @@ public class MainActivity extends AppCompatActivity {
             Post post = postList.get(pos);
 
             Intent i = new Intent(MainActivity.this, PostActivity.class);
-            i.putExtra("post", post);
+            i.putExtra("link", post.Link);
             i.putExtra("position", postList.indexOf(post));
             startActivity(i);
         }
     };
-
-    private void getRssData(){
-        if (NetworkUtil.getConnectivityStatus(this) != NetworkState.NOT_CONNECTED){
-            setOnlineMode();
-        } else {
-            Toast.makeText(this, "You don't have internet connection.", Toast.LENGTH_LONG).show();
-            setOfflineMode();
-        }
-    }
-
-    private void updateAdapter() {
-        postAdapter = new PostAdapter(this, R.layout.post, postList);
-        listView = this.findViewById(R.id.postListView);
-        listView.setAdapter(postAdapter);
-    }
 
     public void setOfflineMode() {
         new RssDataController(this, postList, postAdapter, dialog, mSettings, false).execute(RSS);
@@ -104,6 +82,23 @@ public class MainActivity extends AppCompatActivity {
     public void setOnlineMode() {
         if (!RSS.isEmpty())
             new RssDataController(this, postList, postAdapter, dialog, mSettings, true).execute(RSS);
+        else {
+            showRssRequest();
+        }
+    }
+
+    private void getRssData(){
+        if (NetworkUtil.getConnectivityStatus(this) != NetworkState.NOT_CONNECTED){
+            setOnlineMode();
+        } else {
+            setOfflineMode();
+        }
+    }
+
+    private void updateAdapter() {
+        postAdapter = new PostAdapter(this, R.layout.post, postList);
+        listView = this.findViewById(R.id.postListView);
+        listView.setAdapter(postAdapter);
     }
 
     private void showRssRequest(){
@@ -138,7 +133,6 @@ public class MainActivity extends AppCompatActivity {
                         });
 
         AlertDialog alertDialog = mDialogBuilder.create();
-
         alertDialog.show();
     }
 
