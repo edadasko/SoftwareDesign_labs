@@ -48,7 +48,7 @@ public class RssDataController extends AsyncTask<String, Integer, ArrayList<Post
 
 
     public RssDataController(
-            Context context,
+            final Context context,
             ArrayList<Post> postList,
             PostAdapter adapter,
             final ProgressDialog dialog,
@@ -72,7 +72,7 @@ public class RssDataController extends AsyncTask<String, Integer, ArrayList<Post
                     int index = webViews.indexOf(view);
                     view.saveWebArchive(filesDir + File.separator + webViews.indexOf(view) + ".mht");
                     if (index == cashedNum - 1)
-                        dialog.dismiss();
+                        Toast.makeText(context,  "Top news have been cached.", Toast.LENGTH_SHORT).show();
                 }
             });
         }
@@ -184,7 +184,7 @@ public class RssDataController extends AsyncTask<String, Integer, ArrayList<Post
 
         @Override
         protected void onPreExecute(){
-            dialog.setMessage("Caching news...");
+            dialog.setMessage("Caching photos...");
             dialog.setCancelable(false);
             dialog.show();
         }
@@ -227,6 +227,8 @@ public class RssDataController extends AsyncTask<String, Integer, ArrayList<Post
             for (int i = 0; i < cashedNum; i++) {
                 webViews.get(i).loadUrl(result.get(i).Link);
             }
+
+            dialog.dismiss();
         }
     }
 }

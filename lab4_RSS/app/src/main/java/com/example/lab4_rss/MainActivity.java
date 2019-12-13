@@ -50,7 +50,6 @@ public class MainActivity extends AppCompatActivity {
         registerReceiver(networkReceiver, new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION));
 
         RSS = mSettings.getString(APP_PREFERENCES_RSS, "");
-        getRssData();
     }
 
     @Override
@@ -88,6 +87,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void getRssData(){
+        updateAdapter();
         if (NetworkUtil.getConnectivityStatus(this) != NetworkState.NOT_CONNECTED){
             setOnlineMode();
         } else {
@@ -122,6 +122,7 @@ public class MainActivity extends AppCompatActivity {
                                 editor.apply();
 
                                 RSS = mSettings.getString(APP_PREFERENCES_RSS, "");
+
                                 getRssData();
                             }
                         })

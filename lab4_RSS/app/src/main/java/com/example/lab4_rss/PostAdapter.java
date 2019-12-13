@@ -55,6 +55,7 @@ public class PostAdapter extends ArrayAdapter<Post> {
             convertView.setTag(viewHolder);
         } else {
             viewHolder = (ViewHolder) convertView.getTag();
+            viewHolder.cachedBitmap = null;
         }
 
         Post post = posts.get(position);

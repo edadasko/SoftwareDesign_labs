@@ -14,9 +14,13 @@ public class NetworkChangeReceiver extends BroadcastReceiver {
         NetworkState state = NetworkUtil.getConnectivityStatus(context);
         Toast.makeText(context, status, Toast.LENGTH_LONG).show();
 
-        if (state == NetworkState.NOT_CONNECTED)
-            ((MainActivity) context).setOfflineMode();
-        else
-            ((MainActivity) context).setOnlineMode();
+        if (context.getClass() == MainActivity.class) {
+            if (state == NetworkState.NOT_CONNECTED)
+                ((MainActivity) context).setOfflineMode();
+            else
+                ((MainActivity) context).setOnlineMode();
+        }
     }
 }
+
+
