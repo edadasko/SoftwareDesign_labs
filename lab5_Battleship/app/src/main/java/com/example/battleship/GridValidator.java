@@ -67,6 +67,8 @@ public class GridValidator {
         if (left == CellStatus.Filled) {
             int i = x - 1;
             while (i >= 0 && grid.getCell(new Position(i, y)) == CellStatus.Filled) {
+                if(checkedCells[i][y])
+                    return false;
                 lengthOfShip++;
                 checkedCells[i][y] = true;
                 i--;
@@ -74,6 +76,8 @@ public class GridValidator {
         } else if (right == CellStatus.Filled) {
             int i = x + 1;
             while (i < Grid.Width && grid.getCell(new Position(i, y)) == CellStatus.Filled) {
+                if(checkedCells[i][y])
+                    return false;
                 lengthOfShip++;
                 checkedCells[i][y] = true;
                 i++;
@@ -81,6 +85,8 @@ public class GridValidator {
         } else if (up == CellStatus.Filled) {
             int i = y - 1;
             while (i >= 0 && grid.getCell(new Position(x, i)) == CellStatus.Filled) {
+                if(checkedCells[x][i])
+                    return false;
                 lengthOfShip++;
                 checkedCells[x][i] = true;
                 i--;
@@ -88,6 +94,8 @@ public class GridValidator {
         } else {
             int i = y + 1;
             while (i < Grid.Height && grid.getCell(new Position(x, i)) == CellStatus.Filled) {
+                if(checkedCells[x][i])
+                    return false;
                 lengthOfShip++;
                 checkedCells[x][i] = true;
                 i++;
