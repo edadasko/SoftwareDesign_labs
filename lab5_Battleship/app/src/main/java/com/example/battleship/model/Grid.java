@@ -1,8 +1,9 @@
 package com.example.battleship.model;
 
+import java.io.Serializable;
 import java.security.InvalidParameterException;
 
-public class Grid {
+public class Grid implements Serializable {
     public static final int Height = Position.MaxX + 1;
     public static final int Width = Position.MaxY + 1;
 

@@ -33,6 +33,11 @@ public class GameGridView extends View {
         redPaint.setStrokeWidth(20);
     }
 
+    public void initGrid(Grid grid) {
+        this.grid = grid;
+        this.mode = GridDrawMode.Creation;
+    }
+
     public void setPlayers (Player owner, Player opposite, GridDrawMode mode) {
         this.gridOwnerPlayer = owner;
         this.attackPlayer = opposite;
@@ -64,7 +69,7 @@ public class GameGridView extends View {
             for (int j = 0; j < Grid.Width; j++) {
                 switch (grid.getCells()[i][j]) {
                     case Filled:
-                        if (mode == GridDrawMode.Player)
+                        if (mode == GridDrawMode.Player || mode == GridDrawMode.Creation)
                             canvas.drawRect(i * cellWidth, j * cellHeight,
                                     (i + 1) * cellWidth, (j + 1) * cellHeight,
                                     blackPaint);
@@ -103,16 +108,30 @@ public class GameGridView extends View {
 
     @Override
     public boolean onTouchEvent(MotionEvent event) {
-        if (mode == GridDrawMode.Opponent) {
+
             if (event.getAction() == MotionEvent.ACTION_DOWN) {
                 int row = (int) (event.getX() / cellWidth);
                 int column = (int) (event.getY() / cellHeight);
 
-                attackPlayer.AttackGrid(grid, new Position(row, column));
+                Position p = new Position(row, column);
 
+                if (mode == GridDrawMode.Opponent)
+                    attackPlayer.AttackGrid(grid, p);
+
+                if (mode == GridDrawMode.Creation)
+                    switch (grid.getCell(p)) {
+                        case Filled:
+                            grid.setCell(CellStatus.Empty, p);
+                            break;
+                        case Empty:
+                            grid.setCell(CellStatus.Filled, p);
+
+                    }
                 invalidate();
             }
-        }
         return true;
     }
+
+
+
 }

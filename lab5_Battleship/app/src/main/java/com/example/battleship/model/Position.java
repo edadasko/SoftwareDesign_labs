@@ -1,8 +1,9 @@
 package com.example.battleship.model;
 
+import java.io.Serializable;
 import java.security.InvalidParameterException;
 
-public class Position {
+public class Position implements Serializable {
     public static int MaxX = 9;
     public static int MaxY = 9;
 

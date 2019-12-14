@@ -1,6 +1,8 @@
 package com.example.battleship.model;
 
-public class Player {
+import java.io.Serializable;
+
+public class Player implements Serializable {
     private Grid grid;
 
     public Player() {
@@ -24,5 +26,9 @@ public class Player {
 
     public Grid getGrid() {
         return grid;
+    }
+
+    public void setGrid(Grid grid) {
+        this.grid = grid;
     }
 }

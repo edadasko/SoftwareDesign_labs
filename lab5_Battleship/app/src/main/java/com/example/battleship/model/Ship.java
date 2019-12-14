@@ -1,8 +1,9 @@
 package com.example.battleship.model;
 
+import java.io.Serializable;
 import java.security.InvalidParameterException;
 
-public class Ship {
+public class Ship implements Serializable {
     private int MinSize = 1;
     private int MaxSize = 4;
 
