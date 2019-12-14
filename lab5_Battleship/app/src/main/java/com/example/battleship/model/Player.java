@@ -3,6 +3,10 @@ package com.example.battleship.model;
 public class Player {
     private Grid grid;
 
+    public Player() {
+        grid = new Grid();
+    }
+
     public PlayerMoveStatus AttackGrid(Grid enemyGrid, Position position) {
         switch (enemyGrid.getCell(position)) {
             case Filled:
@@ -16,5 +20,9 @@ public class Player {
             default:
                 return PlayerMoveStatus.TryAgain;
         }
+    }
+
+    public Grid getGrid() {
+        return grid;
     }
 }

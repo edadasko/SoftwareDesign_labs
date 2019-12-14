@@ -3,8 +3,8 @@ package com.example.battleship.model;
 import java.security.InvalidParameterException;
 
 public class Grid {
-    private int Height = Position.MaxX + 1;
-    private int Width = Position.MaxY + 1;
+    public static final int Height = Position.MaxX + 1;
+    public static final int Width = Position.MaxY + 1;
 
     private CellStatus[][] cells;
 
@@ -36,6 +36,10 @@ public class Grid {
                     break;
             }
         }
+    }
+
+    public CellStatus[][] getCells() {
+        return cells;
     }
 
     public CellStatus getCell(Position position) {
