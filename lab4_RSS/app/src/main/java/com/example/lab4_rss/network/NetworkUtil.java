@@ -1,10 +1,10 @@
-package com.example.lab4_rss;
+package com.example.lab4_rss.network;
 
 import android.content.Context;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 
-class NetworkUtil {
+public class NetworkUtil {
     public static NetworkState getConnectivityStatus(Context context) {
         ConnectivityManager cm = (ConnectivityManager) context
                 .getSystemService(Context.CONNECTIVITY_SERVICE);

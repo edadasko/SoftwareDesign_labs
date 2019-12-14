@@ -62,16 +62,16 @@ public class PostAdapter extends ArrayAdapter<Post> {
 
         viewHolder.postImageView.setImageResource(R.drawable.ic_photo_black_24dp);
 
-        if (post.cachedBitmap != null) {
-            viewHolder.cachedBitmap = post.cachedBitmap;
+        if (post.getCachedBitmapString() != null) {
+            viewHolder.cachedBitmap = post.getCachedBitmapString();
         }
         else {
-            viewHolder.postImageURL = post.Image;
+            viewHolder.postImageURL = post.getImage();
         }
 
         new DownloadImageTask().execute(viewHolder);
-        viewHolder.postTitleView.setText(post.Title);
-        viewHolder.postDateView.setText(post.Date.substring(0, 25));
+        viewHolder.postTitleView.setText(post.getTitle());
+        viewHolder.postDateView.setText(post.getDate().substring(0, 25));
 
         return convertView;
     }

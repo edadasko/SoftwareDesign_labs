@@ -1,4 +1,4 @@
-package com.example.lab4_rss;
+package com.example.lab4_rss.activities;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -9,6 +9,10 @@ import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.ProgressBar;
+
+import com.example.lab4_rss.R;
+import com.example.lab4_rss.network.NetworkState;
+import com.example.lab4_rss.network.NetworkUtil;
 
 import java.io.File;
 

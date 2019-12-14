@@ -1,4 +1,4 @@
-package com.example.lab4_rss;
+package com.example.lab4_rss.activities;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -19,6 +19,14 @@ import android.content.Context;
 import android.content.Intent;
 import android.widget.EditText;
 import android.widget.ListView;
+
+import com.example.lab4_rss.Post;
+import com.example.lab4_rss.PostAdapter;
+import com.example.lab4_rss.R;
+import com.example.lab4_rss.RssDataController;
+import com.example.lab4_rss.network.NetworkChangeReceiver;
+import com.example.lab4_rss.network.NetworkState;
+import com.example.lab4_rss.network.NetworkUtil;
 
 public class MainActivity extends AppCompatActivity {
     private ArrayList<Post> postList = new ArrayList<>();
@@ -68,7 +76,7 @@ public class MainActivity extends AppCompatActivity {
             Post post = postList.get(pos);
 
             Intent i = new Intent(MainActivity.this, PostActivity.class);
-            i.putExtra("link", post.Link);
+            i.putExtra("link", post.getLink());
             i.putExtra("position", postList.indexOf(post));
             startActivity(i);
         }

@@ -1,9 +1,11 @@
-package com.example.lab4_rss;
+package com.example.lab4_rss.network;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.widget.Toast;
+
+import com.example.lab4_rss.activities.MainActivity;
 
 public class NetworkChangeReceiver extends BroadcastReceiver {
 

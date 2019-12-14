@@ -140,26 +140,26 @@ public class RssDataController extends AsyncTask<String, Integer, ArrayList<Post
                 channel = root.getChildNodes().item(0);
             NodeList items = channel.getChildNodes();
             for (int i = 0; i < items.getLength(); i++) {
-                Node currentchild = items.item(i);
-                if (currentchild.getNodeName().equalsIgnoreCase("item")) {
-                    Post item = new Post();
-                    NodeList itemchilds = currentchild.getChildNodes();
-                    for (int j = 0; j < itemchilds.getLength(); j++) {
-                        Node current = itemchilds.item(j);
+                Node currentChild = items.item(i);
+                if (currentChild.getNodeName().equalsIgnoreCase("item")) {
+                    String title = "", content = "", date = "", link = "", image = "";
+                    NodeList itemChilds = currentChild.getChildNodes();
+                    for (int j = 0; j < itemChilds.getLength(); j++) {
+                        Node current = itemChilds.item(j);
                         if (current.getNodeName().equalsIgnoreCase("title")) {
-                            item.Title = current.getTextContent();
+                            title = current.getTextContent();
                         } else if (current.getNodeName().equalsIgnoreCase("description")) {
-                            item.Content = current.getTextContent();
+                            content = current.getTextContent();
                         } else if (current.getNodeName().equalsIgnoreCase("pubDate")) {
-                            item.Date = current.getTextContent();
+                            date = current.getTextContent();
                         } else if (current.getNodeName().equalsIgnoreCase("link")) {
-                            item.Link = current.getTextContent();
+                             link = current.getTextContent();
                         } else if (current.getNodeName().equalsIgnoreCase("media:thumbnail") ||
                                 current.getNodeName().equalsIgnoreCase("enclosure")) {
-                            item.Image = current.getAttributes().item(0).getTextContent();
+                            image = current.getAttributes().item(0).getTextContent();
                         }
                     }
-                    posts.add(item);
+                    posts.add(new Post(title, content, date, image, link));
                 }
             }
         }
@@ -198,19 +198,19 @@ public class RssDataController extends AsyncTask<String, Integer, ArrayList<Post
             }
             for (int i = 0; i < cashedNum; i++) {
                 try {
-                    if (cachedPosts.get(i).Image != null) {
-                        URL imageURL = new URL(cachedPosts.get(i).Image);
+                    if (cachedPosts.get(i).getImage() != null) {
+                        URL imageURL = new URL(cachedPosts.get(i).getImage());
                         Bitmap image = BitmapFactory.decodeStream(imageURL.openStream());
                         ByteArrayOutputStream baos = new ByteArrayOutputStream();
                         image.compress(Bitmap.CompressFormat.JPEG, 10, baos);
                         byte[] b = baos.toByteArray();
                         String encodedImage = Base64.encodeToString(b, Base64.DEFAULT);
-                        cachedPosts.get(i).cachedBitmap = encodedImage;
+                        cachedPosts.get(i).setCachedBitmapString(encodedImage);
                     }
                     else
-                        cachedPosts.get(i).cachedBitmap = null;
+                        cachedPosts.get(i).setCachedBitmapString(null);
                 } catch (IOException e) {
-                    cachedPosts.get(i).cachedBitmap = null;
+                    cachedPosts.get(i).setCachedBitmapString(null);
                 }
             }
             return cachedPosts;
@@ -225,7 +225,7 @@ public class RssDataController extends AsyncTask<String, Integer, ArrayList<Post
             editor.apply();
 
             for (int i = 0; i < cashedNum; i++) {
-                webViews.get(i).loadUrl(result.get(i).Link);
+                webViews.get(i).loadUrl(result.get(i).getLink());
             }
 
             dialog.dismiss();
