@@ -27,6 +27,9 @@ import java.lang.reflect.Type;
 
 public class GameActivity extends AppCompatActivity {
     boolean isCreator;
+
+    public String gameId;
+
     GameGridView player1GridView;
     GameGridView player2GridView;
 
@@ -45,8 +48,11 @@ public class GameActivity extends AppCompatActivity {
         player1GridView = findViewById(R.id.player1_grid);
         player2GridView = findViewById(R.id.player2_grid);
 
+        gameId = getIntent().getStringExtra("gameId");
+        isCreator = getIntent().getBooleanExtra("creator", false);
+
         database =  FirebaseDatabase.getInstance();
-        gameRef = database.getReference("games").child("firstGame");
+        gameRef = database.getReference("games").child(gameId);
         gameRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
@@ -117,8 +123,6 @@ public class GameActivity extends AppCompatActivity {
             }
         });
 
-        isCreator = getIntent().getBooleanExtra("creator", false);
-
         player1GridView.initGrid(GridDrawMode.Player);
         player2GridView.initGrid(GridDrawMode.Opponent);
 
@@ -129,23 +133,14 @@ public class GameActivity extends AppCompatActivity {
     public void updateGrids(PlayerMoveStatus status) {
         Gson gson = new Gson();
         String jsonGrid1 = gson.toJson(player1GridView.getGrid());
-        if (isCreator)
-            gameRef.child("player1Grid").setValue(jsonGrid1);
-        else
-            gameRef.child("player2Grid").setValue(jsonGrid1);
+        gameRef.child(isCreator ? "player1Grid" : "player2Grid").setValue(jsonGrid1);
         String jsonGrid2 = gson.toJson(player2GridView.getGrid());
-        if (isCreator)
-            gameRef.child("player2Grid").setValue(jsonGrid2);
-        else
-            gameRef.child("player1Grid").setValue(jsonGrid2);
+        gameRef.child(isCreator ? "player2Grid" : "player1Grid").setValue(jsonGrid2);
     }
 
     @Override
     public void onBackPressed() {
-        if (isCreator)
-            gameRef.child("player1Grid").setValue("");
-        else
-            gameRef.child("player2Grid").setValue("");
+        gameRef.child(isCreator ? "player1Grid" : "player2Grid").setValue("");
 
         super.onBackPressed();
     }

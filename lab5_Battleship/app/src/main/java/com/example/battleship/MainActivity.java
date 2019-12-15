@@ -2,11 +2,14 @@ package com.example.battleship;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Trace;
+import android.text.InputType;
 import android.util.Patterns;
 import android.view.View;
 import android.widget.Button;
@@ -21,7 +24,10 @@ import com.example.battleship.model.PlayerInfo;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.ValueEventListener;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
@@ -31,6 +37,8 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.iid.FirebaseInstanceId;
 
 import java.lang.reflect.Type;
+import java.util.function.Consumer;
+import java.util.function.UnaryOperator;
 
 import static android.text.TextUtils.isEmpty;
 import static android.view.View.GONE;
@@ -109,7 +117,7 @@ public class MainActivity extends AppCompatActivity {
             loginButton.setVisibility(VISIBLE);
             password.setVisibility(VISIBLE);
         } else {
-            createGame();
+            showIdRequest(this::createGame);
         }
     }
 
@@ -129,7 +137,7 @@ public class MainActivity extends AppCompatActivity {
             loginButton.setVisibility(VISIBLE);
             password.setVisibility(VISIBLE);
         } else {
-            connectToGame();
+            showIdRequest(this::connectToGame);
         }
     }
 
@@ -161,19 +169,18 @@ public class MainActivity extends AppCompatActivity {
                 .addOnCompleteListener(task -> {
                     if (task.isSuccessful()) {
                         if (isCreator)
-                            createGame();
+                            showIdRequest(this::createGame);
                         else
-                            connectToGame();
+                            showIdRequest(this::connectToGame);
                     } else {
                         auth.signInWithEmailAndPassword(email, password)
                                 .addOnCompleteListener(task1 -> {
                                     if (!isAnonymous()) {
                                         if (isCreator)
-                                            createGame();
+                                            showIdRequest(this::createGame);
                                         else
-                                            connectToGame();
+                                            showIdRequest(this::connectToGame);
                                     }
-
                                 });
                     }
                 });
@@ -206,40 +213,99 @@ public class MainActivity extends AppCompatActivity {
         return true;
     }
 
-    private void createGame() {
+    private void createGame(String gameId) {
         String uid =  FirebaseAuth.getInstance().getCurrentUser().getUid();
-        Player player = new Player(uid, grid);
 
         FirebaseDatabase database = FirebaseDatabase.getInstance();
-        DatabaseReference games = database.getReference();
+        DatabaseReference game = database.getReference("games").child(gameId);
 
-        Gson gson = new Gson();
-        String jsonGrid = gson.toJson(grid);
-        games.child("games").child("firstGame").setValue(new GameInfo(uid, "", jsonGrid, ""));
+        ValueEventListener checkListener =
+        new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                if (!dataSnapshot.exists()) {
+                    Gson gson = new Gson();
+                    String jsonGrid = gson.toJson(grid);
+                    game.removeEventListener(this);
+                    game.setValue(new GameInfo(uid, "", jsonGrid, ""));
+                    startGame(gameId, true);
+                } else {
+                    showIdErrorMessage();
+                }
+            }
 
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        };
+
+        game.addValueEventListener(checkListener);
+    }
+
+    private void connectToGame(String gameId) {
+        String uid =  FirebaseAuth.getInstance().getCurrentUser().getUid();
+
+        FirebaseDatabase database = FirebaseDatabase.getInstance();
+        DatabaseReference game = database.getReference("games").child(gameId);
+
+        ValueEventListener checkListener = new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                if (dataSnapshot.exists()) {
+                    Gson gson = new Gson();
+                    String jsonGrid = gson.toJson(grid);
+                    game.removeEventListener(this);
+                    game.child("player2Id").setValue(uid);
+                    game.child("player2Grid").setValue(jsonGrid);
+                    startGame(gameId, false);
+                } else {
+                    showIdErrorMessage();
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        };
+
+        game.addValueEventListener(checkListener);
+    }
+
+    private void startGame(String gameId, boolean isCreator) {
         Intent intent = new Intent(this, GameActivity.class);
-        intent.putExtra("player1", player);
-        intent.putExtra("creator", true);
+        intent.putExtra("creator", isCreator);
+        intent.putExtra("gameId", gameId);
         startActivity(intent);
     }
 
-    private void connectToGame() {
-        String uid =  FirebaseAuth.getInstance().getCurrentUser().getUid();
-        Player player = new Player(uid, grid);
-
-        FirebaseDatabase database = FirebaseDatabase.getInstance();
-        DatabaseReference game = database.getReference("games").child("firstGame");
-
-        Gson gson = new Gson();
-        String jsonGrid = gson.toJson(grid);
-        game.child("player2Id").setValue(uid);
-        game.child("player2Grid").setValue(jsonGrid);
-
-        Intent intent = new Intent(this, GameActivity.class);
-        intent.putExtra("player2", player);
-        intent.putExtra("creator", false);
-        startActivity(intent);
+    private void showIdErrorMessage() {
+        Toast.makeText(this, "ID is invalid.", LENGTH_SHORT).show();
     }
 
+    private void showIdRequest(Consumer<String> operation) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("ID");
+
+        final EditText input = new EditText(this);
+        input.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
+        builder.setView(input);
+
+        builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                operation.accept(input.getText().toString());
+            }
+        });
+        builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.cancel();
+            }
+        });
+
+        builder.show();
+    }
 
 }
