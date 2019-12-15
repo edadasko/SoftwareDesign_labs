@@ -33,6 +33,11 @@ public class GameGridView extends View {
         redPaint.setStrokeWidth(20);
     }
 
+    public void initGrid() {
+        this.grid = new Grid();
+        this.mode = GridDrawMode.Inactive;
+    }
+
     public void initGrid(Grid grid) {
         this.grid = grid;
         this.mode = GridDrawMode.Creation;
@@ -108,7 +113,7 @@ public class GameGridView extends View {
 
     @Override
     public boolean onTouchEvent(MotionEvent event) {
-
+        if(mode != GridDrawMode.Inactive) {
             if (event.getAction() == MotionEvent.ACTION_DOWN) {
                 int row = (int) (event.getX() / cellWidth);
                 int column = (int) (event.getY() / cellHeight);
@@ -129,6 +134,7 @@ public class GameGridView extends View {
                     }
                 invalidate();
             }
+        }
         return true;
     }
 

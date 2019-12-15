@@ -4,9 +4,11 @@ import java.io.Serializable;
 
 public class Player implements Serializable {
     private Grid grid;
+    private String name;
 
-    public Player() {
-        grid = new Grid();
+    public Player(String name, Grid grid) {
+        this.grid = grid;
+        this.name = name;
     }
 
     public PlayerMoveStatus AttackGrid(Grid enemyGrid, Position position) {
