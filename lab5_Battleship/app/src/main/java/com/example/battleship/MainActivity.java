@@ -12,6 +12,8 @@ import android.os.Trace;
 import android.text.InputType;
 import android.util.Patterns;
 import android.view.View;
+import android.view.WindowManager;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ProgressBar;
@@ -91,6 +93,12 @@ public class MainActivity extends AppCompatActivity {
         if (!strGrid.isEmpty()) {
             grid = gson.fromJson(strGrid, type);
         }
+
+        name.setVisibility(GONE);
+        email.setVisibility(GONE);
+        loginButton.setVisibility(GONE);
+        password.setVisibility(GONE);
+        progressBar.setVisibility(GONE);
     }
 
     public void createGridButtonClick(View view) {
@@ -142,6 +150,13 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void loginWithEmail(View view) {
+        try {
+            InputMethodManager imm = (InputMethodManager)getSystemService(INPUT_METHOD_SERVICE);
+            imm.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(), 0);
+        } catch (Exception e) {
+            return;
+        }
+
         String email = this.email.getText().toString();
         String name = this.name.getText().toString();
         String password = this.password.getText().toString();
@@ -214,6 +229,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void createGame(String gameId) {
+        progressBar.setVisibility(VISIBLE);
         String uid =  FirebaseAuth.getInstance().getCurrentUser().getUid();
 
         FirebaseDatabase database = FirebaseDatabase.getInstance();
@@ -244,6 +260,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void connectToGame(String gameId) {
+        progressBar.setVisibility(VISIBLE);
         String uid =  FirebaseAuth.getInstance().getCurrentUser().getUid();
 
         FirebaseDatabase database = FirebaseDatabase.getInstance();
@@ -286,10 +303,10 @@ public class MainActivity extends AppCompatActivity {
 
     private void showIdRequest(Consumer<String> operation) {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle("ID");
+        builder.setTitle("Enter ID");
 
         final EditText input = new EditText(this);
-        input.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
+        input.setInputType(InputType.TYPE_CLASS_TEXT);
         builder.setView(input);
 
         builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
