@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.os.Trace;
 import android.util.Patterns;
 import android.view.View;
 import android.widget.Button;
@@ -13,11 +14,13 @@ import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
+import com.example.battleship.model.GameInfo;
 import com.example.battleship.model.Grid;
 import com.example.battleship.model.Player;
 import com.example.battleship.model.PlayerInfo;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.database.DatabaseReference;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
@@ -47,6 +50,8 @@ public class MainActivity extends AppCompatActivity {
 
     Grid grid;
     Player player;
+
+    boolean isCreator;
 
     public static final String APP_PREFERENCES = "settings";
     public static final String APP_PREFERENCES_GRID = "grid";
@@ -98,16 +103,33 @@ public class MainActivity extends AppCompatActivity {
             return;
         }
         if (isAnonymous()) {
+            isCreator = true;
             name.setVisibility(VISIBLE);
             email.setVisibility(VISIBLE);
             loginButton.setVisibility(VISIBLE);
             password.setVisibility(VISIBLE);
         } else {
-            String uid = FirebaseAuth.getInstance().getCurrentUser().getUid();
-            Player player = new Player(uid, grid);
-            Intent intent = new Intent(this, GameActivity.class);
-            intent.putExtra("player1", player);
-            startActivity(intent);
+            createGame();
+        }
+    }
+
+    public void startGameById(View view) {
+        if (grid == null) {
+            Toast.makeText(this, "At first create your game grid.", LENGTH_SHORT).show();
+            return;
+        }
+
+        if (!arePlayServicesOk()) {
+            return;
+        }
+        if (isAnonymous()) {
+            isCreator = false;
+            name.setVisibility(VISIBLE);
+            email.setVisibility(VISIBLE);
+            loginButton.setVisibility(VISIBLE);
+            password.setVisibility(VISIBLE);
+        } else {
+            connectToGame();
         }
     }
 
@@ -138,21 +160,18 @@ public class MainActivity extends AppCompatActivity {
         auth.createUserWithEmailAndPassword(email, password)
                 .addOnCompleteListener(task -> {
                     if (task.isSuccessful()) {
-                        String uid = auth.getCurrentUser().getUid();
-                        Player player = new Player(uid, grid);
-                        Intent intent = new Intent(this, GameActivity.class);
-                        intent.putExtra("player1", player);
-                        startActivity(intent);
-
+                        if (isCreator)
+                            createGame();
+                        else
+                            connectToGame();
                     } else {
                         auth.signInWithEmailAndPassword(email, password)
                                 .addOnCompleteListener(task1 -> {
                                     if (!isAnonymous()) {
-                                        String uid = auth.getCurrentUser().getUid();
-                                        Player player = new Player(uid, grid);
-                                        Intent intent = new Intent(this, GameActivity.class);
-                                        intent.putExtra("player1", player);
-                                        startActivity(intent);
+                                        if (isCreator)
+                                            createGame();
+                                        else
+                                            connectToGame();
                                     }
 
                                 });
@@ -186,5 +205,41 @@ public class MainActivity extends AppCompatActivity {
 
         return true;
     }
+
+    private void createGame() {
+        String uid =  FirebaseAuth.getInstance().getCurrentUser().getUid();
+        Player player = new Player(uid, grid);
+
+        FirebaseDatabase database = FirebaseDatabase.getInstance();
+        DatabaseReference games = database.getReference();
+
+        Gson gson = new Gson();
+        String jsonGrid = gson.toJson(grid);
+        games.child("games").child("firstGame").setValue(new GameInfo(uid, "", jsonGrid, ""));
+
+        Intent intent = new Intent(this, GameActivity.class);
+        intent.putExtra("player1", player);
+        intent.putExtra("creator", true);
+        startActivity(intent);
+    }
+
+    private void connectToGame() {
+        String uid =  FirebaseAuth.getInstance().getCurrentUser().getUid();
+        Player player = new Player(uid, grid);
+
+        FirebaseDatabase database = FirebaseDatabase.getInstance();
+        DatabaseReference game = database.getReference("games").child("firstGame");
+
+        Gson gson = new Gson();
+        String jsonGrid = gson.toJson(grid);
+        game.child("player2Id").setValue(uid);
+        game.child("player2Grid").setValue(jsonGrid);
+
+        Intent intent = new Intent(this, GameActivity.class);
+        intent.putExtra("player2", player);
+        intent.putExtra("creator", false);
+        startActivity(intent);
+    }
+
 
 }

@@ -11,6 +11,7 @@ import android.view.View;
 import com.example.battleship.model.CellStatus;
 import com.example.battleship.model.Grid;
 import com.example.battleship.model.Player;
+import com.example.battleship.model.PlayerMoveStatus;
 import com.example.battleship.model.Position;
 
 public class GameGridView extends View {
@@ -33,14 +34,19 @@ public class GameGridView extends View {
         redPaint.setStrokeWidth(20);
     }
 
-    public void initGrid() {
+    public void initGrid(GridDrawMode mode) {
+        this.mode = mode;
         this.grid = new Grid();
-        this.mode = GridDrawMode.Inactive;
     }
 
-    public void initGrid(Grid grid) {
+    public void initGrid(GridDrawMode mode, Grid grid) {
+        this.mode = mode;
         this.grid = grid;
-        this.mode = GridDrawMode.Creation;
+    }
+
+    public void updateGrid(Grid grid) {
+        this.grid = grid;
+        invalidate();
     }
 
     public void setPlayers (Player owner, Player opposite, GridDrawMode mode) {
@@ -120,8 +126,17 @@ public class GameGridView extends View {
 
                 Position p = new Position(row, column);
 
-                if (mode == GridDrawMode.Opponent)
-                    attackPlayer.AttackGrid(grid, p);
+                if (mode == GridDrawMode.Opponent) {
+                    switch (grid.getCell(p)) {
+                        case Filled:
+                            grid.setCell(CellStatus.Attacked, p);
+                            break;
+
+                        case Empty:
+                            grid.setCell(CellStatus.Missed, p);
+                            break;
+                    }
+                }
 
                 if (mode == GridDrawMode.Creation)
                     switch (grid.getCell(p)) {

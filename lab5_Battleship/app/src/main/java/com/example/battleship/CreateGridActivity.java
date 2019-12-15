@@ -25,7 +25,7 @@ public class CreateGridActivity extends AppCompatActivity {
         grid = (Grid) getIntent().getSerializableExtra("grid");
         setContentView(R.layout.activity_create_grid);
         gridView = findViewById(R.id.gridView);
-        gridView.initGrid(grid);
+        gridView.initGrid(GridDrawMode.Creation, grid);
         mSettings = getSharedPreferences(MainActivity.APP_PREFERENCES, Context.MODE_PRIVATE);
     }
 
@@ -47,8 +47,8 @@ public class CreateGridActivity extends AppCompatActivity {
         else {
             SharedPreferences.Editor editor = mSettings.edit();
             Gson gson = new Gson();
-            String jsonCache = gson.toJson(grid);
-            editor.putString(MainActivity.APP_PREFERENCES_GRID, jsonCache);
+            String jsonGrid = gson.toJson(grid);
+            editor.putString(MainActivity.APP_PREFERENCES_GRID, jsonGrid);
             editor.apply();
             this.onBackPressed();
         }
