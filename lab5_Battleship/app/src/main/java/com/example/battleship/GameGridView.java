@@ -13,22 +13,26 @@ import com.example.battleship.model.Grid;
 import com.example.battleship.model.Player;
 import com.example.battleship.model.PlayerMoveStatus;
 import com.example.battleship.model.Position;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.gson.Gson;
 
 public class GameGridView extends View {
     private int cellWidth, cellHeight;
     private Paint blackPaint = new Paint();
     private Paint redPaint = new Paint();
-    private Player attackPlayer;
-    private Player gridOwnerPlayer;
     private Grid grid;
     private GridDrawMode mode;
+    private Context context;
 
     public GameGridView(Context context) {
         this(context, null);
+        this.context = context;
     }
 
     public GameGridView(Context context, AttributeSet attrs) {
         super(context, attrs);
+        this.context = context;
         blackPaint.setStyle(Paint.Style.FILL_AND_STROKE);
         redPaint.setColor(Color.RED);
         redPaint.setStrokeWidth(20);
@@ -49,12 +53,16 @@ public class GameGridView extends View {
         invalidate();
     }
 
-    public void setPlayers (Player owner, Player opposite, GridDrawMode mode) {
-        this.gridOwnerPlayer = owner;
-        this.attackPlayer = opposite;
+    public Grid getGrid() {
+        return grid;
+    }
 
-        this.grid = gridOwnerPlayer.getGrid();
+    public void setMode(GridDrawMode mode) {
         this.mode = mode;
+    }
+
+    public GridDrawMode getMode() {
+        return mode;
     }
 
     @Override
@@ -119,7 +127,7 @@ public class GameGridView extends View {
 
     @Override
     public boolean onTouchEvent(MotionEvent event) {
-        if(mode != GridDrawMode.Inactive) {
+        if (mode != GridDrawMode.Inactive) {
             if (event.getAction() == MotionEvent.ACTION_DOWN) {
                 int row = (int) (event.getX() / cellWidth);
                 int column = (int) (event.getY() / cellHeight);
@@ -130,11 +138,16 @@ public class GameGridView extends View {
                     switch (grid.getCell(p)) {
                         case Filled:
                             grid.setCell(CellStatus.Attacked, p);
+                            ((GameActivity)this.context).updateGrids(PlayerMoveStatus.Attacked);
                             break;
 
                         case Empty:
                             grid.setCell(CellStatus.Missed, p);
+                            ((GameActivity)this.context).updateGrids(PlayerMoveStatus.Missed);
                             break;
+
+                        default:
+                            ((GameActivity)this.context).updateGrids(PlayerMoveStatus.TryAgain);
                     }
                 }
 

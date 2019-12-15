@@ -2,13 +2,19 @@ package com.example.battleship;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
+import android.widget.Toast;
 
 import com.example.battleship.model.GameInfo;
 import com.example.battleship.model.Grid;
 import com.example.battleship.model.Player;
+import com.example.battleship.model.PlayerMoveStatus;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -20,13 +26,15 @@ import com.google.gson.reflect.TypeToken;
 import java.lang.reflect.Type;
 
 public class GameActivity extends AppCompatActivity {
-    Player player;
     boolean isCreator;
     GameGridView player1GridView;
     GameGridView player2GridView;
 
     FirebaseDatabase database;
     DatabaseReference gameRef;
+
+    boolean isCreatorsMove = true;
+    boolean isOpponentsConnected = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,8 +50,6 @@ public class GameActivity extends AppCompatActivity {
         gameRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                // This method is called once with the initial value and again
-                // whenever data at this location is updated.
                 GameInfo value = dataSnapshot.getValue(GameInfo.class);
                 if (value == null)
                     return;
@@ -53,31 +59,94 @@ public class GameActivity extends AppCompatActivity {
                 if (value.player1Grid != null && !value.player1Grid.isEmpty()) {
                     if(isCreator)
                         player1GridView.updateGrid(gson.fromJson(value.player1Grid, type));
-                    else
+                    else {
                         player2GridView.updateGrid(gson.fromJson(value.player1Grid, type));
+                    }
                 }
                 if (value.player2Grid != null && !value.player2Grid.isEmpty()) {
+                    isOpponentsConnected = true;
                     if(isCreator)
                         player2GridView.updateGrid(gson.fromJson(value.player2Grid, type));
-                    else
+                    else {
                         player1GridView.updateGrid(gson.fromJson(value.player2Grid, type));
+                    }
                 }
 
+                if (isOpponentsConnected && (value.player1Grid.isEmpty() || value.player2Grid.isEmpty())) {
+                    Toast.makeText(getApplicationContext(),
+                            "Connection error!",
+                            Toast.LENGTH_SHORT).show();
+                    isOpponentsConnected = false;
+                    gameRef.removeEventListener(this);
+                    finish();
+                }
+
+                if (isOpponentsConnected) {
+                    isCreatorsMove = !isCreatorsMove;
+
+                    if (isCreator) {
+                        if (isCreatorsMove) {
+                            player2GridView.setMode(GridDrawMode.Opponent);
+                            Toast.makeText(getApplicationContext(),
+                                    "Your move!",
+                                    Toast.LENGTH_SHORT).show();
+                        } else {
+                            player2GridView.setMode(GridDrawMode.Inactive);
+                            Toast.makeText(getApplicationContext(),
+                                    "Opponents move!",
+                                    Toast.LENGTH_SHORT).show();
+                        }
+                    } else {
+                        if (!isCreatorsMove) {
+                            Toast.makeText(getApplicationContext(),
+                                    "Your move!",
+                                    Toast.LENGTH_SHORT).show();
+                            player2GridView.setMode(GridDrawMode.Opponent);
+                        } else {
+                            Toast.makeText(getApplicationContext(),
+                                    "Opponents move!",
+                                    Toast.LENGTH_SHORT).show();
+                            player2GridView.setMode(GridDrawMode.Inactive);
+                        }
+                    }
+                }
             }
 
             @Override
             public void onCancelled(DatabaseError error) {
-                // Failed to read value
             }
         });
 
         isCreator = getIntent().getBooleanExtra("creator", false);
-        if (isCreator)
-            player = (Player) getIntent().getSerializableExtra("player1");
-        else
-            player = (Player) getIntent().getSerializableExtra("player2");
 
         player1GridView.initGrid(GridDrawMode.Player);
         player2GridView.initGrid(GridDrawMode.Opponent);
+
+        if (!isCreator)
+            player2GridView.setMode(GridDrawMode.Inactive);
+    }
+
+    public void updateGrids(PlayerMoveStatus status) {
+        Gson gson = new Gson();
+        String jsonGrid1 = gson.toJson(player1GridView.getGrid());
+        if (isCreator)
+            gameRef.child("player1Grid").setValue(jsonGrid1);
+        else
+            gameRef.child("player2Grid").setValue(jsonGrid1);
+        String jsonGrid2 = gson.toJson(player2GridView.getGrid());
+        if (isCreator)
+            gameRef.child("player2Grid").setValue(jsonGrid2);
+        else
+            gameRef.child("player1Grid").setValue(jsonGrid2);
+    }
+
+    @Override
+    public void onBackPressed() {
+        if (isCreator)
+            gameRef.child("player1Grid").setValue("");
+        else
+            gameRef.child("player2Grid").setValue("");
+
+        super.onBackPressed();
     }
 }
