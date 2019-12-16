@@ -12,13 +12,11 @@ import com.example.battleship.model.CellStatus;
 import com.example.battleship.model.Grid;
 import com.example.battleship.model.PlayerMoveStatus;
 import com.example.battleship.model.Position;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-import com.google.gson.Gson;
 
 public class GameGridView extends View {
     private int cellWidth, cellHeight;
     private Paint blackPaint = new Paint();
+    private Paint thickBlackPaint = new Paint();
     private Paint redPaint = new Paint();
     private Grid grid;
     private GridDrawMode mode;
@@ -32,9 +30,11 @@ public class GameGridView extends View {
     public GameGridView(Context context, AttributeSet attrs) {
         super(context, attrs);
         this.context = context;
+        thickBlackPaint.setStyle(Paint.Style.FILL_AND_STROKE);
         blackPaint.setStyle(Paint.Style.FILL_AND_STROKE);
         redPaint.setColor(Color.RED);
         redPaint.setStrokeWidth(20);
+        thickBlackPaint.setStrokeWidth(10);
     }
 
     public void initGrid(GridDrawMode mode) {
@@ -122,6 +122,11 @@ public class GameGridView extends View {
         for (int i = 1; i < Grid.Height; i++) {
             canvas.drawLine(0, i * cellHeight, width, i * cellHeight, blackPaint);
         }
+
+        canvas.drawLine(0, 0, 0, height, thickBlackPaint);
+        canvas.drawLine(width, 0, width, height, thickBlackPaint);
+        canvas.drawLine(0, 0, width, 0, thickBlackPaint);
+        canvas.drawLine(0, height, width, height, thickBlackPaint);
     }
 
     @Override
