@@ -27,5 +27,4 @@ public class Grid implements Serializable {
     public void setCell(CellStatus status, Position position) {
         cells[position.getX()][position.getY()] = status;
     }
-
 }

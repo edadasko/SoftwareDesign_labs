@@ -19,7 +19,6 @@ import android.widget.Toast;
 
 import com.example.battleship.model.GameInfo;
 import com.example.battleship.model.Grid;
-import com.example.battleship.model.Player;
 import com.example.battleship.model.PlayerMoveStatus;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -30,7 +29,6 @@ import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
 import java.lang.reflect.Type;
-import java.util.Date;
 
 public class GameActivity extends AppCompatActivity {
     boolean isCreator;

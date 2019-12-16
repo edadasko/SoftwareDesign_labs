@@ -14,6 +14,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.Map;
 
@@ -61,6 +62,7 @@ public class StatisticsActivity extends AppCompatActivity {
                     new Date((Long)stat.get("date"))));
         }
 
+        this.stats.sort((o1, o2) -> o2.date.compareTo(o1.date));
 
         statsAdapter = new StatsAdapter(this, R.layout.stats, this.stats);
         statsListView = findViewById(R.id.statistics_list_view);

@@ -10,7 +10,6 @@ import android.view.View;
 
 import com.example.battleship.model.CellStatus;
 import com.example.battleship.model.Grid;
-import com.example.battleship.model.Player;
 import com.example.battleship.model.PlayerMoveStatus;
 import com.example.battleship.model.Position;
 import com.google.firebase.database.DatabaseReference;

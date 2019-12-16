@@ -10,7 +10,6 @@ import android.view.View;
 import android.widget.Toast;
 
 import com.example.battleship.model.Grid;
-import com.example.battleship.model.Player;
 import com.google.gson.Gson;
 
 public class CreateGridActivity extends AppCompatActivity {

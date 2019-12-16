@@ -1,10 +1,5 @@
 package com.example.battleship.model;
 
-import com.google.firebase.database.IgnoreExtraProperties;
-
-import java.util.Date;
-
-@IgnoreExtraProperties
 public class GameInfo {
     public String player1Email;
     public String player2Email;

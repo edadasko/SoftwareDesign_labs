@@ -9,7 +9,7 @@
     <LinearLayout
         android:id="@+id/buttons"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         android:orientation="vertical"
         android:gravity="center">
 
@@ -18,57 +18,45 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/battleship"
-            android:textColor="@android:color/holo_red_dark"
+            android:textColor="@color/colorAccent"
             android:textSize="36sp"
             android:textStyle="bold" />
 
         <Button
-            android:layout_width="wrap_content"
+            android:layout_width="200dp"
             android:layout_height="wrap_content"
             android:text="@string/create_game"
             android:onClick="startMultiplayer"/>
 
         <Button
-            android:layout_width="wrap_content"
+            android:layout_width="200dp"
             android:layout_height="wrap_content"
             android:text="@string/connect_by_game_id"
             android:onClick="startGameById" />
 
         <Button
-            android:layout_width="wrap_content"
+            android:layout_width="200dp"
             android:layout_height="wrap_content"
             android:text="@string/create_grid"
             android:onClick="createGridButtonClick"/>
 
         <Button
-            android:layout_width="wrap_content"
+            android:layout_width="200dp"
             android:layout_height="wrap_content"
             android:text="@string/show_statistics"
             android:onClick="showStatisticsButtonClick"/>
 
-    </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/buttons"
-        android:layout_centerHorizontal="true"
-        android:animateLayoutChanges="true"
-        android:gravity="center"
-        android:orientation="vertical">
-
-
         <EditText
             android:id="@+id/input_email"
+            android:layout_width="200dp"
             android:visibility="gone"
-            android:layout_width="wrap_content"
             android:minWidth="100dp"
             android:layout_height="wrap_content"
             android:hint="@string/email" />
 
         <EditText
             android:id="@+id/input_password"
-            android:layout_width="wrap_content"
+            android:layout_width="200dp"
             android:minWidth="100dp"
             android:visibility="gone"
             android:layout_height="wrap_content"
@@ -77,14 +65,12 @@
 
         <Button
             android:id="@+id/login"
-            style="@style/Widget.AppCompat.Button.Borderless.Colored"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:visibility="gone"
             android:onClick="loginWithEmail"
             android:text="@string/log_in"
-            android:textAllCaps="false"
-            android:textColor="#000" />
+            android:textAllCaps="false" />
 
         <ProgressBar
             android:id="@+id/progress"

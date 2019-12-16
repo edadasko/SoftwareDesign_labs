@@ -43,7 +43,6 @@ import static android.widget.Toast.LENGTH_SHORT;
 public class MainActivity extends AppCompatActivity {
 
     private static final String LOG_TAG = "StartActivity";
-    private boolean logginIn;
 
     private EditText email;
     private EditText password;
@@ -146,9 +145,7 @@ public class MainActivity extends AppCompatActivity {
 
         String email = this.email.getText().toString();
         String password = this.password.getText().toString();
-        if (logginIn) {
-            return;
-        }
+
         if (isEmpty(email) || !Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
             Toast.makeText(this, "Enter correct email", LENGTH_SHORT).show();
             return;
@@ -158,7 +155,6 @@ public class MainActivity extends AppCompatActivity {
             return;
         }
 
-        logginIn = true;
         showProgressDialog();
 
         FirebaseAuth auth = FirebaseAuth.getInstance();
@@ -178,7 +174,13 @@ public class MainActivity extends AppCompatActivity {
                                         else
                                             showIdRequest(this::connectToGame);
                                     }
-                                });
+                                }).addOnFailureListener(task2 -> {
+                                    hideProgressDialog();
+                                    Toast.makeText(
+                                            this,
+                                            "Invalid email or password.",
+                                            Toast.LENGTH_LONG).show();
+                        });
                     }
                 });
     }
@@ -286,7 +288,7 @@ public class MainActivity extends AppCompatActivity {
 
     private void showIdRequest(Consumer<String> operation) {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle("Enter ID");
+        builder.setTitle("Enter ID:");
 
         final EditText input = new EditText(this);
         input.setInputType(InputType.TYPE_CLASS_TEXT);
@@ -296,12 +298,6 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 operation.accept(input.getText().toString());
-            }
-        });
-        builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                dialog.cancel();
             }
         });
 
