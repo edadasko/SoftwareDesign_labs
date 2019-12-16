@@ -25,13 +25,13 @@
         <Button
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="CREATE GAME"
+            android:text="@string/create_game"
             android:onClick="startMultiplayer"/>
 
         <Button
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="CONNECT BY GAME ID"
+            android:text="@string/connect_by_game_id"
             android:onClick="startGameById" />
 
         <Button
@@ -39,6 +39,12 @@
             android:layout_height="wrap_content"
             android:text="@string/create_grid"
             android:onClick="createGridButtonClick"/>
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/show_statistics"
+            android:onClick="showStatisticsButtonClick"/>
 
     </LinearLayout>
 
@@ -86,6 +92,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="32dp"
             android:visibility="invisible" />
+
     </LinearLayout>
 
 

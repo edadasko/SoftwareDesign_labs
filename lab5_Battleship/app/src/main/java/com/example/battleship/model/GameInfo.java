@@ -16,7 +16,6 @@ public class GameInfo {
 
     public int currentMove;
 
-
     public GameInfo() {
     }
 

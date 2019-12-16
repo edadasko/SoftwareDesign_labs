@@ -415,6 +415,6 @@ public class GameActivity extends AppCompatActivity {
         stats.child("user2").setValue(secondEmailTextView.getText());
         stats.child("score1").setValue(score1);
         stats.child("score2").setValue(score2);
-        stats.child("date").setValue(new Date(System.currentTimeMillis()));
+        stats.child("date").setValue(System.currentTimeMillis());
     }
 }

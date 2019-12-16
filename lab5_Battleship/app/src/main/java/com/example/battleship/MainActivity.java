@@ -8,11 +8,9 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.os.Trace;
 import android.text.InputType;
 import android.util.Patterns;
 import android.view.View;
-import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
@@ -21,11 +19,8 @@ import android.widget.Toast;
 
 import com.example.battleship.model.GameInfo;
 import com.example.battleship.model.Grid;
-import com.example.battleship.model.Player;
-import com.example.battleship.model.PlayerInfo;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -313,4 +308,7 @@ public class MainActivity extends AppCompatActivity {
         builder.show();
     }
 
+    public void showStatisticsButtonClick(View view) {
+        startActivity(new Intent(this, StatisticsActivity.class));
+    }
 }

@@ -13,4 +13,8 @@
     <string name="password">Password</string>
     <string name="log_in">Log in</string>
     <string name="_0">0</string>
+    <string name="connect_by_game_id">CONNECT BY GAME ID</string>
+    <string name="create_game">CREATE GAME</string>
+    <string name="show_statistics">SHOW STATISTICS</string>
+    <string name="statistics">STATISTICS</string>
 </resources>
