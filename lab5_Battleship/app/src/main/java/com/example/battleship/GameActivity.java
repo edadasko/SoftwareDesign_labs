@@ -30,6 +30,7 @@ import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
 import java.lang.reflect.Type;
+import java.util.Date;
 
 public class GameActivity extends AppCompatActivity {
     boolean isCreator;
@@ -407,5 +408,13 @@ public class GameActivity extends AppCompatActivity {
     }
 
     private void saveStatistics() {
+        DatabaseReference stats = database.getReference("stats").child(gameId);
+        firstEmailTextView = findViewById(R.id.first_email);
+        stats.child("user1").setValue(firstEmailTextView.getText());
+        secondEmailTextView = findViewById(R.id.second_email);
+        stats.child("user2").setValue(secondEmailTextView.getText());
+        stats.child("score1").setValue(score1);
+        stats.child("score2").setValue(score2);
+        stats.child("date").setValue(new Date(System.currentTimeMillis()));
     }
 }

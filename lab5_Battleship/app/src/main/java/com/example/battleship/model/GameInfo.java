@@ -16,7 +16,6 @@ public class GameInfo {
 
     public int currentMove;
 
-    public Date date;
 
     public GameInfo() {
     }
@@ -29,7 +28,6 @@ public class GameInfo {
         this.player1Score = 0;
         this.player2Score = 0;
         this.currentMove = 1;
-        this.date = new Date(System.currentTimeMillis());
     }
 
 }
