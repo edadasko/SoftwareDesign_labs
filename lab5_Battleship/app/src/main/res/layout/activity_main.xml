@@ -51,29 +51,14 @@
         android:gravity="center"
         android:orientation="vertical">
 
-        <LinearLayout
+
+        <EditText
+            android:id="@+id/input_email"
+            android:visibility="gone"
             android:layout_width="wrap_content"
-            android:layout_gravity="center"
+            android:minWidth="100dp"
             android:layout_height="wrap_content"
-            android:orientation="horizontal">
-
-            <EditText
-                android:id="@+id/input_name"
-                android:layout_width="wrap_content"
-                android:minWidth="100dp"
-                android:visibility="gone"
-                android:layout_height="wrap_content"
-                android:hint="Name" />
-
-            <EditText
-                android:id="@+id/input_email"
-                android:visibility="gone"
-                android:layout_width="wrap_content"
-                android:minWidth="100dp"
-                android:layout_height="wrap_content"
-                android:hint="Email" />
-        </LinearLayout>
-
+            android:hint="@string/email" />
 
         <EditText
             android:id="@+id/input_password"
@@ -81,7 +66,7 @@
             android:minWidth="100dp"
             android:visibility="gone"
             android:layout_height="wrap_content"
-            android:hint="Password"
+            android:hint="@string/password"
             android:inputType="textPassword" />
 
         <Button
@@ -91,7 +76,7 @@
             android:layout_height="wrap_content"
             android:visibility="gone"
             android:onClick="loginWithEmail"
-            android:text="Log in"
+            android:text="@string/log_in"
             android:textAllCaps="false"
             android:textColor="#000" />
 

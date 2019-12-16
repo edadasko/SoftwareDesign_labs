@@ -7,4 +7,9 @@
     <string name="create_grid">CREATE GRID</string>
     <string name="create">CREATE</string>
     <string name="create_grid_rules">Place ships to create your game grid.\n\nYou have:\n1 ship of 4 blocks,\n 2 ships of 3 blocks,\n3 ships of 2 blocks,\n4 ships of 1 block.</string>
+    <string name="you">YOU</string>
+    <string name="opponent">WAITING FOR OPPONENT</string>
+    <string name="email">Email</string>
+    <string name="password">Password</string>
+    <string name="log_in">Log in</string>
 </resources>

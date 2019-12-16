@@ -36,11 +36,9 @@ import com.google.gson.reflect.TypeToken;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.iid.FirebaseInstanceId;
 
 import java.lang.reflect.Type;
 import java.util.function.Consumer;
-import java.util.function.UnaryOperator;
 
 import static android.text.TextUtils.isEmpty;
 import static android.view.View.GONE;
@@ -52,14 +50,12 @@ public class MainActivity extends AppCompatActivity {
     private static final String LOG_TAG = "StartActivity";
     private boolean logginIn;
 
-    private EditText name;
     private EditText email;
     private EditText password;
     private Button loginButton;
     private ProgressBar progressBar;
 
     Grid grid;
-    Player player;
 
     boolean isCreator;
 
@@ -74,7 +70,6 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         mSettings = getSharedPreferences(APP_PREFERENCES, Context.MODE_PRIVATE);
 
-        name = findViewById(R.id.input_name);
         email = findViewById(R.id.input_email);
         password = findViewById(R.id.input_password);
         loginButton = findViewById(R.id.login);
@@ -94,7 +89,6 @@ public class MainActivity extends AppCompatActivity {
             grid = gson.fromJson(strGrid, type);
         }
 
-        name.setVisibility(GONE);
         email.setVisibility(GONE);
         loginButton.setVisibility(GONE);
         password.setVisibility(GONE);
@@ -120,7 +114,6 @@ public class MainActivity extends AppCompatActivity {
         }
         if (isAnonymous()) {
             isCreator = true;
-            name.setVisibility(VISIBLE);
             email.setVisibility(VISIBLE);
             loginButton.setVisibility(VISIBLE);
             password.setVisibility(VISIBLE);
@@ -140,7 +133,6 @@ public class MainActivity extends AppCompatActivity {
         }
         if (isAnonymous()) {
             isCreator = false;
-            name.setVisibility(VISIBLE);
             email.setVisibility(VISIBLE);
             loginButton.setVisibility(VISIBLE);
             password.setVisibility(VISIBLE);
@@ -158,17 +150,12 @@ public class MainActivity extends AppCompatActivity {
         }
 
         String email = this.email.getText().toString();
-        String name = this.name.getText().toString();
         String password = this.password.getText().toString();
         if (logginIn) {
             return;
         }
         if (isEmpty(email) || !Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
             Toast.makeText(this, "Enter correct email", LENGTH_SHORT).show();
-            return;
-        }
-        if (isEmpty(name)) {
-            Toast.makeText(this, "Enter correct name", LENGTH_SHORT).show();
             return;
         }
         if (password.length() < 6) {
@@ -230,7 +217,7 @@ public class MainActivity extends AppCompatActivity {
 
     private void createGame(String gameId) {
         progressBar.setVisibility(VISIBLE);
-        String uid =  FirebaseAuth.getInstance().getCurrentUser().getUid();
+        String email =  FirebaseAuth.getInstance().getCurrentUser().getEmail();
 
         FirebaseDatabase database = FirebaseDatabase.getInstance();
         DatabaseReference game = database.getReference("games").child(gameId);
@@ -243,7 +230,7 @@ public class MainActivity extends AppCompatActivity {
                     Gson gson = new Gson();
                     String jsonGrid = gson.toJson(grid);
                     game.removeEventListener(this);
-                    game.setValue(new GameInfo(uid, "", jsonGrid, ""));
+                    game.setValue(new GameInfo(email, "", jsonGrid, ""));
                     startGame(gameId, true);
                 } else {
                     showIdErrorMessage();
@@ -261,7 +248,7 @@ public class MainActivity extends AppCompatActivity {
 
     private void connectToGame(String gameId) {
         progressBar.setVisibility(VISIBLE);
-        String uid =  FirebaseAuth.getInstance().getCurrentUser().getUid();
+        String email =  FirebaseAuth.getInstance().getCurrentUser().getEmail();
 
         FirebaseDatabase database = FirebaseDatabase.getInstance();
         DatabaseReference game = database.getReference("games").child(gameId);
@@ -273,7 +260,7 @@ public class MainActivity extends AppCompatActivity {
                     Gson gson = new Gson();
                     String jsonGrid = gson.toJson(grid);
                     game.removeEventListener(this);
-                    game.child("player2Id").setValue(uid);
+                    game.child("player2Email").setValue(email);
                     game.child("player2Grid").setValue(jsonGrid);
                     startGame(gameId, false);
                 } else {
@@ -299,6 +286,7 @@ public class MainActivity extends AppCompatActivity {
 
     private void showIdErrorMessage() {
         Toast.makeText(this, "ID is invalid.", LENGTH_SHORT).show();
+        hideProgressDialog();
     }
 
     private void showIdRequest(Consumer<String> operation) {
