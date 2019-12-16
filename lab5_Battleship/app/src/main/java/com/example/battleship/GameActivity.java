@@ -81,13 +81,14 @@ public class GameActivity extends AppCompatActivity {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 String value = dataSnapshot.getValue(String.class);
+                if (value == null) {
+                    onBackPressed();
+                    return;
+                }
 
                 if (value.isEmpty()) {
-                    Toast.makeText(getApplicationContext(),
-                            "Connection error!",
-                            Toast.LENGTH_SHORT).show();
-                    grid1Ref.removeEventListener(this);
                     finish();
+                    return;
                 }
 
                 Gson gson = new Gson();
@@ -108,13 +109,14 @@ public class GameActivity extends AppCompatActivity {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 String value = dataSnapshot.getValue(String.class);
+                if (value == null) {
+                    onBackPressed();
+                    return;
+                }
 
                 if (isOpponentsConnected && value.isEmpty()) {
-                    Toast.makeText(getApplicationContext(),
-                            "Connection error!",
-                            Toast.LENGTH_SHORT).show();
-                    grid2Ref.removeEventListener(this);
                     finish();
+                    return;
                 }
 
                 Gson gson = new Gson();
@@ -139,6 +141,11 @@ public class GameActivity extends AppCompatActivity {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 String value = dataSnapshot.getValue(String.class);
+                if (value == null) {
+                    onBackPressed();
+                    return;
+                }
+
                 if (!value.isEmpty() && isCreator) {
                     isOpponentsConnected = true;
                     Toast.makeText(getApplicationContext(),
@@ -160,7 +167,15 @@ public class GameActivity extends AppCompatActivity {
                 if (!isOpponentsConnected)
                     return;
 
-                int value = dataSnapshot.getValue(int.class);
+                int value;
+                try {
+                    value = dataSnapshot.getValue(int.class);
+                }
+                catch (NullPointerException exp) {
+                    onBackPressed();
+                    return;
+                }
+
                 if (isCreator) {
                     if (value == 1) {
                         player2GridView.setMode(GridDrawMode.Opponent);
@@ -205,6 +220,10 @@ public class GameActivity extends AppCompatActivity {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 String value = dataSnapshot.getValue(String.class);
+                if (value == null) {
+                    onBackPressed();
+                    return;
+                }
                 firstEmailTextView = findViewById(R.id.first_email);
                 firstEmailTextView.setText(value);
                 email1.removeEventListener(this);
@@ -221,6 +240,10 @@ public class GameActivity extends AppCompatActivity {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 String value = dataSnapshot.getValue(String.class);
+                if(value == null) {
+                    onBackPressed();
+                    return;
+                }
                 if(value.isEmpty())
                     return;
                 secondEmailTextView = findViewById(R.id.second_email);
@@ -236,7 +259,15 @@ public class GameActivity extends AppCompatActivity {
         player1ScoreRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                int value = dataSnapshot.getValue(int.class);
+                int value;
+
+                try {
+                    value = dataSnapshot.getValue(int.class);
+                }
+                catch (NullPointerException exp) {
+                    onBackPressed();
+                    return;
+                }
 
                 score1 = value;
                 if (isCreator) {
@@ -267,7 +298,16 @@ public class GameActivity extends AppCompatActivity {
         player2ScoreRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                int value = dataSnapshot.getValue(int.class);
+                int value;
+
+                try {
+                    value = dataSnapshot.getValue(int.class);
+                }
+                catch (NullPointerException exp) {
+                    onBackPressed();
+                    return;
+                }
+
                 score2 = value;
                 if (isCreator) {
                     secondScoreTextView = findViewById(R.id.second_score);
@@ -337,8 +377,7 @@ public class GameActivity extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
-        grid1Ref.setValue("");
-        grid2Ref.setValue("");
+        database.getReference("games").child(gameId).removeValue();
 
         super.onBackPressed();
     }
@@ -358,12 +397,15 @@ public class GameActivity extends AppCompatActivity {
         builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-
-
+                database.getReference("games").child(gameId).removeValue();
+                saveStatistics();
+                onBackPressed();
             }
         });
 
         builder.show();
     }
-    
+
+    private void saveStatistics() {
+    }
 }
