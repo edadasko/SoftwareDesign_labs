@@ -3,13 +3,17 @@ package com.example.battleship;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.app.AlertDialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.os.Bundle;
+import android.text.InputType;
 import android.util.Log;
 import android.view.View;
+import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -38,12 +42,21 @@ public class GameActivity extends AppCompatActivity {
     private FirebaseDatabase database;
     private DatabaseReference grid1Ref;
     private DatabaseReference grid2Ref;
+    private DatabaseReference player1ScoreRef;
+    private DatabaseReference player2ScoreRef;
     private DatabaseReference currentMoveRef;
 
     private TextView firstEmailTextView;
     private TextView secondEmailTextView;
 
+    private TextView firstScoreTextView;
+    private TextView secondScoreTextView;
+
     boolean isOpponentsConnected = false;
+
+    final int MAX_SCORE = 20;
+    public int score1 = 0;
+    public int score2 = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -60,6 +73,8 @@ public class GameActivity extends AppCompatActivity {
         database =  FirebaseDatabase.getInstance();
         grid1Ref = database.getReference("games").child(gameId).child("player1Grid");
         grid2Ref = database.getReference("games").child(gameId).child("player2Grid");
+        player1ScoreRef = database.getReference("games").child(gameId).child("player1Score");
+        player2ScoreRef = database.getReference("games").child(gameId).child("player2Score");
         currentMoveRef = database.getReference("games").child(gameId).child("currentMove");
 
         grid1Ref.addValueEventListener(new ValueEventListener() {
@@ -218,14 +233,82 @@ public class GameActivity extends AppCompatActivity {
             }
         });
 
-    }
+        player1ScoreRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                int value = dataSnapshot.getValue(int.class);
 
+                score1 = value;
+                if (isCreator) {
+                    firstScoreTextView = findViewById(R.id.first_score);
+                    firstScoreTextView.setText(String.valueOf(score1));
+                }
+                else {
+                    secondScoreTextView = findViewById(R.id.second_score);
+                    secondScoreTextView.setText(String.valueOf(score1));
+                }
+
+                if (value == MAX_SCORE) {
+                    if (isCreator) {
+                        showWinMessage();
+                    }
+                    else {
+                        showLooseMessage();
+                    }
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+
+        player2ScoreRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                int value = dataSnapshot.getValue(int.class);
+                score2 = value;
+                if (isCreator) {
+                    secondScoreTextView = findViewById(R.id.second_score);
+                    secondScoreTextView.setText(String.valueOf(score2));
+                }
+                else {
+                    firstScoreTextView = findViewById(R.id.first_score);
+                    firstScoreTextView.setText(String.valueOf(score2));
+                }
+
+                if (value == MAX_SCORE) {
+                    if (!isCreator) {
+                        showWinMessage();
+                    }
+                    else {
+                        showLooseMessage();
+                    }
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+
+    }
 
     public void updateGrids(PlayerMoveStatus status) {
         if (status == PlayerMoveStatus.Attacked) {
             Toast.makeText(getApplicationContext(),
                         "Your move again!",
                     Toast.LENGTH_SHORT).show();
+            if (isCreator) {
+                score1++;
+                player1ScoreRef.setValue(score1);
+            }
+            else {
+                score2++;
+                player2ScoreRef.setValue(score2);
+            }
         }
         else if (status == PlayerMoveStatus.Missed){
             if (isCreator) {
@@ -259,4 +342,28 @@ public class GameActivity extends AppCompatActivity {
 
         super.onBackPressed();
     }
+
+    private void showWinMessage() {
+        showMessage("You win!");
+    }
+
+    private void showLooseMessage() {
+        showMessage("You lose :(");
+    }
+
+    private void showMessage(String message) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle(message);
+
+        builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+
+
+            }
+        });
+
+        builder.show();
+    }
+    
 }
