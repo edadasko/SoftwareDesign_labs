@@ -17,7 +17,6 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.example.battleship.model.GameInfo;
 import com.example.battleship.model.Grid;
 import com.example.battleship.model.PlayerMoveStatus;
 import com.google.firebase.database.DataSnapshot;

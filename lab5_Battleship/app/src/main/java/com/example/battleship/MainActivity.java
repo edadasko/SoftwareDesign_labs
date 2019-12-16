@@ -33,7 +33,6 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.FirebaseDatabase;
 
 import java.lang.reflect.Type;
-import java.util.function.Consumer;
 
 import static android.text.TextUtils.isEmpty;
 import static android.view.View.GONE;
@@ -41,9 +40,6 @@ import static android.view.View.VISIBLE;
 import static android.widget.Toast.LENGTH_SHORT;
 
 public class MainActivity extends AppCompatActivity {
-
-    private static final String LOG_TAG = "StartActivity";
-
     private EditText email;
     private EditText password;
     private Button loginButton;
@@ -97,45 +93,110 @@ public class MainActivity extends AppCompatActivity {
         startActivity(intent);
     }
 
-    public void startMultiplayer(View view) {
-        if (grid == null) {
-            Toast.makeText(this, "At first create your game grid.", LENGTH_SHORT).show();
-            return;
-        }
-
-        if (!arePlayServicesOk()) {
-            return;
-        }
-        if (isAnonymous()) {
-            isCreator = true;
-            email.setVisibility(VISIBLE);
-            loginButton.setVisibility(VISIBLE);
-            password.setVisibility(VISIBLE);
-        } else {
-            showIdRequest(this::createGame);
-        }
+    public void startNewGame(View view) {
+        start(true);
     }
 
     public void startGameById(View view) {
+        start(false);
+    }
+
+    private void start(boolean isCreator) {
         if (grid == null) {
             Toast.makeText(this, "At first create your game grid.", LENGTH_SHORT).show();
             return;
         }
 
+        this.isCreator = isCreator;
+
         if (!arePlayServicesOk()) {
             return;
         }
         if (isAnonymous()) {
-            isCreator = false;
+            this.isCreator = isCreator;
             email.setVisibility(VISIBLE);
             loginButton.setVisibility(VISIBLE);
             password.setVisibility(VISIBLE);
         } else {
-            showIdRequest(this::connectToGame);
+            showIdRequest();
         }
     }
 
-    public void loginWithEmail(View view) {
+    private void showIdRequest() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("Enter ID:");
+
+        final EditText input = new EditText(this);
+        input.setInputType(InputType.TYPE_CLASS_TEXT);
+        builder.setView(input);
+
+        builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                startConnection(input.getText().toString());
+            }
+        });
+
+        builder.show();
+    }
+
+
+    private void startConnection(String gameId) {
+        progressBar.setVisibility(VISIBLE);
+        String email =  FirebaseAuth.getInstance().getCurrentUser().getEmail();
+
+        FirebaseDatabase database = FirebaseDatabase.getInstance();
+        DatabaseReference game = database.getReference("games").child(gameId);
+
+        ValueEventListener checkListener;
+
+        if (isCreator) {
+            checkListener = new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+                    if (!dataSnapshot.exists()) {
+                        Gson gson = new Gson();
+                        String jsonGrid = gson.toJson(grid);
+                        game.removeEventListener(this);
+                        game.setValue(new GameInfo(email, "", jsonGrid, ""));
+                        startGame(gameId, true);
+                    } else {
+                        showIdErrorMessage();
+                    }
+                }
+
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
+                }
+            };
+        }
+        else {
+            checkListener = new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+                    if (dataSnapshot.exists()) {
+                        Gson gson = new Gson();
+                        String jsonGrid = gson.toJson(grid);
+                        game.removeEventListener(this);
+                        game.child("player2Email").setValue(email);
+                        game.child("player2Grid").setValue(jsonGrid);
+                        startGame(gameId, false);
+                    } else {
+                        showIdErrorMessage();
+                    }
+                }
+
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
+
+                }
+            };
+        }
+
+        game.addValueEventListener(checkListener);
+    }
+
+    public void login(View view) {
         try {
             InputMethodManager imm = (InputMethodManager)getSystemService(INPUT_METHOD_SERVICE);
             imm.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(), 0);
@@ -161,18 +222,12 @@ public class MainActivity extends AppCompatActivity {
         auth.createUserWithEmailAndPassword(email, password)
                 .addOnCompleteListener(task -> {
                     if (task.isSuccessful()) {
-                        if (isCreator)
-                            showIdRequest(this::createGame);
-                        else
-                            showIdRequest(this::connectToGame);
+                        showIdRequest();
                     } else {
                         auth.signInWithEmailAndPassword(email, password)
                                 .addOnCompleteListener(task1 -> {
                                     if (!isAnonymous()) {
-                                        if (isCreator)
-                                            showIdRequest(this::createGame);
-                                        else
-                                            showIdRequest(this::connectToGame);
+                                        showIdRequest();
                                     }
                                 }).addOnFailureListener(task2 -> {
                                     hideProgressDialog();
@@ -212,68 +267,6 @@ public class MainActivity extends AppCompatActivity {
         return true;
     }
 
-    private void createGame(String gameId) {
-        progressBar.setVisibility(VISIBLE);
-        String email =  FirebaseAuth.getInstance().getCurrentUser().getEmail();
-
-        FirebaseDatabase database = FirebaseDatabase.getInstance();
-        DatabaseReference game = database.getReference("games").child(gameId);
-
-        ValueEventListener checkListener =
-        new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                if (!dataSnapshot.exists()) {
-                    Gson gson = new Gson();
-                    String jsonGrid = gson.toJson(grid);
-                    game.removeEventListener(this);
-                    game.setValue(new GameInfo(email, "", jsonGrid, ""));
-                    startGame(gameId, true);
-                } else {
-                    showIdErrorMessage();
-                }
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-
-            }
-        };
-
-        game.addValueEventListener(checkListener);
-    }
-
-    private void connectToGame(String gameId) {
-        progressBar.setVisibility(VISIBLE);
-        String email =  FirebaseAuth.getInstance().getCurrentUser().getEmail();
-
-        FirebaseDatabase database = FirebaseDatabase.getInstance();
-        DatabaseReference game = database.getReference("games").child(gameId);
-
-        ValueEventListener checkListener = new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                if (dataSnapshot.exists()) {
-                    Gson gson = new Gson();
-                    String jsonGrid = gson.toJson(grid);
-                    game.removeEventListener(this);
-                    game.child("player2Email").setValue(email);
-                    game.child("player2Grid").setValue(jsonGrid);
-                    startGame(gameId, false);
-                } else {
-                    showIdErrorMessage();
-                }
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-
-            }
-        };
-
-        game.addValueEventListener(checkListener);
-    }
-
     private void startGame(String gameId, boolean isCreator) {
         Intent intent = new Intent(this, GameActivity.class);
         intent.putExtra("creator", isCreator);
@@ -284,24 +277,6 @@ public class MainActivity extends AppCompatActivity {
     private void showIdErrorMessage() {
         Toast.makeText(this, "ID is invalid.", LENGTH_SHORT).show();
         hideProgressDialog();
-    }
-
-    private void showIdRequest(Consumer<String> operation) {
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle("Enter ID:");
-
-        final EditText input = new EditText(this);
-        input.setInputType(InputType.TYPE_CLASS_TEXT);
-        builder.setView(input);
-
-        builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                operation.accept(input.getText().toString());
-            }
-        });
-
-        builder.show();
     }
 
     public void showStatisticsButtonClick(View view) {
