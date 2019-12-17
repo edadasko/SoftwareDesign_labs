@@ -1,4 +1,4 @@
-package com.example.battleship;
+package com.example.battleship.grid;
 
 public enum GridDrawMode {
     Player,

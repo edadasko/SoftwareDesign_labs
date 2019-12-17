@@ -1,22 +1,17 @@
-package com.example.battleship;
+package com.example.battleship.activities;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.app.AlertDialog;
-import android.content.BroadcastReceiver;
-import android.content.Context;
 import android.content.DialogInterface;
-import android.content.Intent;
-import android.content.pm.ActivityInfo;
 import android.os.Bundle;
-import android.text.InputType;
-import android.util.Log;
-import android.view.View;
-import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.battleship.grid.GameGridView;
+import com.example.battleship.grid.GridDrawMode;
+import com.example.battleship.R;
 import com.example.battleship.model.Grid;
 import com.example.battleship.model.PlayerMoveStatus;
 import com.google.firebase.database.DataSnapshot;
@@ -68,295 +63,46 @@ public class GameActivity extends AppCompatActivity {
         gameId = getIntent().getStringExtra("gameId");
         isCreator = getIntent().getBooleanExtra("creator", false);
 
-        database =  FirebaseDatabase.getInstance();
+        database = FirebaseDatabase.getInstance();
         grid1Ref = database.getReference("games").child(gameId).child("player1Grid");
         grid2Ref = database.getReference("games").child(gameId).child("player2Grid");
         player1ScoreRef = database.getReference("games").child(gameId).child("player1Score");
         player2ScoreRef = database.getReference("games").child(gameId).child("player2Score");
         currentMoveRef = database.getReference("games").child(gameId).child("currentMove");
 
-        grid1Ref.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                String value = dataSnapshot.getValue(String.class);
-                if (value == null) {
-                    onBackPressed();
-                    return;
-                }
-
-                if (value.isEmpty()) {
-                    finish();
-                    return;
-                }
-
-                Gson gson = new Gson();
-                Type type = new TypeToken<Grid>(){}.getType();
-                if(isCreator)
-                    player1GridView.updateGrid(gson.fromJson(value, type));
-                else {
-                    player2GridView.updateGrid(gson.fromJson(value, type));
-                }
-            }
-
-            @Override
-            public void onCancelled(DatabaseError error) {
-            }
-        });
-
-        grid2Ref.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                String value = dataSnapshot.getValue(String.class);
-                if (value == null) {
-                    onBackPressed();
-                    return;
-                }
-
-                if (isOpponentsConnected && value.isEmpty()) {
-                    finish();
-                    return;
-                }
-
-                Gson gson = new Gson();
-                Type type = new TypeToken<Grid>(){}.getType();
-
-                if (!value.isEmpty()) {
-                    isOpponentsConnected = true;
-                    if (isCreator)
-                        player2GridView.updateGrid(gson.fromJson(value, type));
-                    else {
-                        player1GridView.updateGrid(gson.fromJson(value, type));
-                    }
-                }
-            }
-
-            @Override
-            public void onCancelled(DatabaseError error) {
-            }
-        });
-
-        grid2Ref.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                String value = dataSnapshot.getValue(String.class);
-                if (value == null) {
-                    onBackPressed();
-                    return;
-                }
-
-                if (!value.isEmpty() && isCreator) {
-                    isOpponentsConnected = true;
-                    Toast.makeText(getApplicationContext(),
-                            "Opponent connects! Your move!",
-                            Toast.LENGTH_SHORT).show();
-                    player2GridView.setMode(GridDrawMode.Opponent);
-                    grid2Ref.removeEventListener(this);
-                }
-            }
-
-            @Override
-            public void onCancelled(DatabaseError error) {
-            }
-        });
-
-        currentMoveRef.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                if (!isOpponentsConnected)
-                    return;
-
-                int value;
-                try {
-                    value = dataSnapshot.getValue(int.class);
-                }
-                catch (NullPointerException exp) {
-                    onBackPressed();
-                    return;
-                }
-
-                if (isCreator) {
-                    if (value == 1) {
-                        player2GridView.setMode(GridDrawMode.Opponent);
-                        Toast.makeText(getApplicationContext(),
-                                "Your move!",
-                                Toast.LENGTH_SHORT).show();
-                    } else {
-                        player2GridView.setMode(GridDrawMode.Inactive);
-                        Toast.makeText(getApplicationContext(),
-                                "Opponents move!",
-                                Toast.LENGTH_SHORT).show();
-                    }
-                } else {
-                    if (value == 2) {
-                        Toast.makeText(getApplicationContext(),
-                                "Your move!",
-                                Toast.LENGTH_SHORT).show();
-                        player2GridView.setMode(GridDrawMode.Opponent);
-                    } else {
-                        Toast.makeText(getApplicationContext(),
-                                "Opponents move!",
-                                Toast.LENGTH_SHORT).show();
-                        player2GridView.setMode(GridDrawMode.Inactive);
-                    }
-                }
-            }
-
-            @Override
-            public void onCancelled(DatabaseError error) {
-
-            }
-        });
+        subscribeOnGrid1Updates();
+        subscribeOnGrid2Updates();
+        subscribeOnCurrentMoveUpdate();
 
         player1GridView.initGrid(GridDrawMode.Player);
         player2GridView.initGrid(GridDrawMode.Opponent);
-
         player2GridView.setMode(GridDrawMode.Inactive);
 
-        DatabaseReference email1 = database.getReference("games").child(gameId).child(isCreator ? "player1Email" : "player2Email");
+        setEmailsTextViews();
 
-        email1.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                String value = dataSnapshot.getValue(String.class);
-                if (value == null) {
-                    onBackPressed();
-                    return;
-                }
-                firstEmailTextView = findViewById(R.id.first_email);
-                firstEmailTextView.setText(value);
-                email1.removeEventListener(this);
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-            }
-        });
-
-        DatabaseReference email2 = database.getReference("games").child(gameId).child(isCreator ? "player2Email" : "player1Email");
-
-        email2.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                String value = dataSnapshot.getValue(String.class);
-                if(value == null) {
-                    onBackPressed();
-                    return;
-                }
-                if(value.isEmpty())
-                    return;
-                secondEmailTextView = findViewById(R.id.second_email);
-                secondEmailTextView.setText(value);
-                email2.removeEventListener(this);
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-            }
-        });
-
-        player1ScoreRef.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                int value;
-
-                try {
-                    value = dataSnapshot.getValue(int.class);
-                }
-                catch (NullPointerException exp) {
-                    onBackPressed();
-                    return;
-                }
-
-                score1 = value;
-                if (isCreator) {
-                    firstScoreTextView = findViewById(R.id.first_score);
-                    firstScoreTextView.setText(String.valueOf(score1));
-                }
-                else {
-                    secondScoreTextView = findViewById(R.id.second_score);
-                    secondScoreTextView.setText(String.valueOf(score1));
-                }
-
-                if (value == MAX_SCORE) {
-                    if (isCreator) {
-                        showWinMessage();
-                    }
-                    else {
-                        showLooseMessage();
-                    }
-                }
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-
-            }
-        });
-
-        player2ScoreRef.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                int value;
-
-                try {
-                    value = dataSnapshot.getValue(int.class);
-                }
-                catch (NullPointerException exp) {
-                    onBackPressed();
-                    return;
-                }
-
-                score2 = value;
-                if (isCreator) {
-                    secondScoreTextView = findViewById(R.id.second_score);
-                    secondScoreTextView.setText(String.valueOf(score2));
-                }
-                else {
-                    firstScoreTextView = findViewById(R.id.first_score);
-                    firstScoreTextView.setText(String.valueOf(score2));
-                }
-
-                if (value == MAX_SCORE) {
-                    if (!isCreator) {
-                        showWinMessage();
-                    }
-                    else {
-                        showLooseMessage();
-                    }
-                }
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-
-            }
-        });
-
+        subscribeOnScore1Updates();
+        subscribeOnScore2Updates();
     }
 
     public void updateGrids(PlayerMoveStatus status) {
         if (status == PlayerMoveStatus.Attacked) {
             Toast.makeText(getApplicationContext(),
-                        "Your move again!",
+                    "Your move again!",
                     Toast.LENGTH_SHORT).show();
             if (isCreator) {
                 score1++;
                 player1ScoreRef.setValue(score1);
-            }
-            else {
+            } else {
                 score2++;
                 player2ScoreRef.setValue(score2);
             }
-        }
-        else if (status == PlayerMoveStatus.Missed){
+        } else if (status == PlayerMoveStatus.Missed) {
             if (isCreator) {
                 currentMoveRef.setValue(2);
-            }
-            else {
+            } else {
                 currentMoveRef.setValue(1);
             }
-        }
-        else
+        } else
             return;
 
         Gson gson = new Gson();
@@ -413,5 +159,264 @@ public class GameActivity extends AppCompatActivity {
         stats.child("score1").setValue(score1);
         stats.child("score2").setValue(score2);
         stats.child("date").setValue(System.currentTimeMillis());
+    }
+
+    private void subscribeOnGrid1Updates() {
+        grid1Ref.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                String value = dataSnapshot.getValue(String.class);
+                if (value == null) {
+                    onBackPressed();
+                    return;
+                }
+
+                if (value.isEmpty()) {
+                    finish();
+                    return;
+                }
+
+                Gson gson = new Gson();
+                Type type = new TypeToken<Grid>() {
+                }.getType();
+                if (isCreator)
+                    player1GridView.updateGrid(gson.fromJson(value, type));
+                else {
+                    player2GridView.updateGrid(gson.fromJson(value, type));
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError error) {
+            }
+        });
+    }
+
+    private void subscribeOnGrid2Updates() {
+        grid2Ref.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                String value = dataSnapshot.getValue(String.class);
+                if (value == null) {
+                    onBackPressed();
+                    return;
+                }
+
+                if (isOpponentsConnected && value.isEmpty()) {
+                    finish();
+                    return;
+                }
+
+                Gson gson = new Gson();
+                Type type = new TypeToken<Grid>() {
+                }.getType();
+
+                if (!value.isEmpty()) {
+                    isOpponentsConnected = true;
+                    if (isCreator)
+                        player2GridView.updateGrid(gson.fromJson(value, type));
+                    else {
+                        player1GridView.updateGrid(gson.fromJson(value, type));
+                    }
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError error) {
+            }
+        });
+
+        grid2Ref.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                String value = dataSnapshot.getValue(String.class);
+                if (value == null) {
+                    onBackPressed();
+                    return;
+                }
+
+                if (!value.isEmpty() && isCreator) {
+                    isOpponentsConnected = true;
+                    Toast.makeText(getApplicationContext(),
+                            "Opponent connects! Your move!",
+                            Toast.LENGTH_SHORT).show();
+                    player2GridView.setMode(GridDrawMode.Opponent);
+                    grid2Ref.removeEventListener(this);
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError error) {
+            }
+        });
+    }
+
+    private void subscribeOnCurrentMoveUpdate() {
+        currentMoveRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                if (!isOpponentsConnected)
+                    return;
+
+                int value;
+                try {
+                    value = dataSnapshot.getValue(int.class);
+                } catch (NullPointerException exp) {
+                    onBackPressed();
+                    return;
+                }
+
+                if (isCreator) {
+                    if (value == 1) {
+                        player2GridView.setMode(GridDrawMode.Opponent);
+                        Toast.makeText(getApplicationContext(),
+                                "Your move!",
+                                Toast.LENGTH_SHORT).show();
+                    } else {
+                        player2GridView.setMode(GridDrawMode.Inactive);
+                        Toast.makeText(getApplicationContext(),
+                                "Opponents move!",
+                                Toast.LENGTH_SHORT).show();
+                    }
+                } else {
+                    if (value == 2) {
+                        Toast.makeText(getApplicationContext(),
+                                "Your move!",
+                                Toast.LENGTH_SHORT).show();
+                        player2GridView.setMode(GridDrawMode.Opponent);
+                    } else {
+                        Toast.makeText(getApplicationContext(),
+                                "Opponents move!",
+                                Toast.LENGTH_SHORT).show();
+                        player2GridView.setMode(GridDrawMode.Inactive);
+                    }
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError error) {
+
+            }
+        });
+    }
+
+    private void setEmailsTextViews() {
+        DatabaseReference email1 =
+                database.getReference("games").child(gameId).child(isCreator ? "player1Email" : "player2Email");
+        email1.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                String value = dataSnapshot.getValue(String.class);
+                if (value == null) {
+                    onBackPressed();
+                    return;
+                }
+                firstEmailTextView = findViewById(R.id.first_email);
+                firstEmailTextView.setText(value);
+                email1.removeEventListener(this);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+            }
+        });
+
+        DatabaseReference email2 =
+                database.getReference("games").child(gameId).child(isCreator ? "player2Email" : "player1Email");
+
+        email2.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                String value = dataSnapshot.getValue(String.class);
+                if (value == null) {
+                    onBackPressed();
+                    return;
+                }
+                if (value.isEmpty())
+                    return;
+                secondEmailTextView = findViewById(R.id.second_email);
+                secondEmailTextView.setText(value);
+                email2.removeEventListener(this);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+            }
+        });
+    }
+
+    private void subscribeOnScore1Updates() {
+        player1ScoreRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                int value;
+
+                try {
+                    value = dataSnapshot.getValue(int.class);
+                } catch (NullPointerException exp) {
+                    onBackPressed();
+                    return;
+                }
+
+                score1 = value;
+                if (isCreator) {
+                    firstScoreTextView = findViewById(R.id.first_score);
+                    firstScoreTextView.setText(String.valueOf(score1));
+                } else {
+                    secondScoreTextView = findViewById(R.id.second_score);
+                    secondScoreTextView.setText(String.valueOf(score1));
+                }
+
+                if (value == MAX_SCORE) {
+                    if (isCreator) {
+                        showWinMessage();
+                    } else {
+                        showLooseMessage();
+                    }
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+    }
+
+    private void subscribeOnScore2Updates() {
+        player2ScoreRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                int value;
+
+                try {
+                    value = dataSnapshot.getValue(int.class);
+                } catch (NullPointerException exp) {
+                    onBackPressed();
+                    return;
+                }
+
+                score2 = value;
+                if (isCreator) {
+                    secondScoreTextView = findViewById(R.id.second_score);
+                    secondScoreTextView.setText(String.valueOf(score2));
+                } else {
+                    firstScoreTextView = findViewById(R.id.first_score);
+                    firstScoreTextView.setText(String.valueOf(score2));
+                }
+
+                if (value == MAX_SCORE) {
+                    if (!isCreator) {
+                        showWinMessage();
+                    } else {
+                        showLooseMessage();
+                    }
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+            }
+        });
     }
 }

@@ -1,4 +1,4 @@
-package com.example.battleship;
+package com.example.battleship.activities;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -17,6 +17,7 @@ import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
+import com.example.battleship.R;
 import com.example.battleship.model.GameInfo;
 import com.example.battleship.model.Grid;
 import com.google.android.gms.common.ConnectionResult;

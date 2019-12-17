@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".GameActivity">
+    tools:context=".activities.GameActivity">
 
 
     <LinearLayout
@@ -27,7 +27,7 @@
                 android:text="@string/you"
                 android:textColor="@color/colorAccent"
                 android:textSize="24sp" />
-            <com.example.battleship.GameGridView
+            <com.example.battleship.grid.GameGridView
                 android:id="@+id/player1_grid"
                 android:layout_width="300dp"
                 android:layout_height="300dp"
@@ -59,7 +59,7 @@
                 android:textColor="@color/colorPrimary"
                 android:textSize="24sp" />
 
-            <com.example.battleship.GameGridView
+            <com.example.battleship.grid.GameGridView
                 android:id="@+id/player2_grid"
                 android:layout_width="300dp"
                 android:layout_height="300dp"

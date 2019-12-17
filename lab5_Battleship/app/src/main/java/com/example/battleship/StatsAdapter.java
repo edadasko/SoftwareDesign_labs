@@ -62,7 +62,7 @@ public class StatsAdapter extends ArrayAdapter<GameStats> {
 
         statsViewHolderItem.score1.setText(String.valueOf(stat.score1));
         statsViewHolderItem.score2.setText(String.valueOf(stat.score2));
-        String date = new SimpleDateFormat("yyyy-mm-dd").format(stat.date) + "\n" +
+        String date = new SimpleDateFormat("yyyy-MM-dd").format(stat.date) + "\n" +
                 new SimpleDateFormat("hh:mm:ss").format(stat.date);
         statsViewHolderItem.date.setText(date);
 

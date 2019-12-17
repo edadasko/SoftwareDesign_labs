@@ -1,4 +1,4 @@
-package com.example.battleship;
+package com.example.battleship.activities;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -6,6 +6,8 @@ import android.os.Bundle;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 
+import com.example.battleship.R;
+import com.example.battleship.StatsAdapter;
 import com.example.battleship.model.GameStats;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;

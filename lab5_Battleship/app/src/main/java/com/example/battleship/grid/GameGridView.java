@@ -1,4 +1,4 @@
-package com.example.battleship;
+package com.example.battleship.grid;
 
 import android.content.Context;
 import android.graphics.Canvas;
@@ -8,6 +8,7 @@ import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.View;
 
+import com.example.battleship.activities.GameActivity;
 import com.example.battleship.model.CellStatus;
 import com.example.battleship.model.Grid;
 import com.example.battleship.model.PlayerMoveStatus;
@@ -169,7 +170,4 @@ public class GameGridView extends View {
         }
         return true;
     }
-
-
-
 }

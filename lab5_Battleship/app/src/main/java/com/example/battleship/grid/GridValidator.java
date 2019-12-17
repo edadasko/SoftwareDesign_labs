@@ -1,4 +1,4 @@
-package com.example.battleship;
+package com.example.battleship.grid;
 
 import com.example.battleship.model.CellStatus;
 import com.example.battleship.model.Grid;

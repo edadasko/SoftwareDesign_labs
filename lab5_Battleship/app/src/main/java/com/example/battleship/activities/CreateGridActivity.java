@@ -1,4 +1,4 @@
-package com.example.battleship;
+package com.example.battleship.activities;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -9,6 +9,10 @@ import android.view.Gravity;
 import android.view.View;
 import android.widget.Toast;
 
+import com.example.battleship.grid.GameGridView;
+import com.example.battleship.grid.GridDrawMode;
+import com.example.battleship.grid.GridValidator;
+import com.example.battleship.R;
 import com.example.battleship.model.Grid;
 import com.google.gson.Gson;
 
