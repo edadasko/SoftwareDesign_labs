@@ -151,7 +151,7 @@ public class GameActivity extends AppCompatActivity {
     }
 
     private void saveStatistics() {
-        DatabaseReference stats = database.getReference("stats").child(gameId);
+        DatabaseReference stats = database.getReference("stats").child(gameId + System.currentTimeMillis());
         firstEmailTextView = findViewById(R.id.first_email);
         stats.child("user1").setValue(firstEmailTextView.getText());
         secondEmailTextView = findViewById(R.id.second_email);
